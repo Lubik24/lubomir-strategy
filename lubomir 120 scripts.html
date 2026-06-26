@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>180 Сценариев — Lubomir</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dim: #8B6914;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --card: #161616;
+    --border: #222222;
+    --text: #E0E0E0;
+    --muted: #888888;
+    --green: #2ecc71;
+    --red: #e74c3c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a1400 100%);
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 36px 24px 28px;
+    text-align: center;
+  }
+  .header-label { font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .header h1 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; color: #fff; line-height: 1.2; }
+  .header h1 span { color: var(--gold); }
+  .header-sub { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+  /* MONTH TABS */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 13px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .tab:hover { color: var(--gold-light); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .content { display: none; padding: 20px 16px; max-width: 860px; margin: 0 auto; }
+  .content.active { display: block; }
+
+  /* MONTH HEADER */
+  .month-header {
+    background: linear-gradient(135deg, #1a1400, #111);
+    border: 1px solid var(--gold-dim);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .month-title { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: #fff; }
+  .month-title span { color: var(--gold); }
+  .month-focus { font-size: 12px; color: var(--muted); max-width: 400px; }
+  .month-stats { display: flex; gap: 16px; }
+  .month-stat { text-align: center; }
+  .month-stat-val { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; color: var(--gold); }
+  .month-stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* WEEK SECTION */
+  .week-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* SCRIPT CARD */
+  .sc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .sc-head {
+    padding: 12px 16px;
+    background: #131313;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .sc-head:hover { background: #181818; }
+
+  .sc-left { flex: 1; }
+  .sc-num { font-size: 9px; letter-spacing: 2px; color: var(--gold-dim); font-weight: 700; margin-bottom: 3px; }
+  .sc-title { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: #fff; }
+
+  .sc-right { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .badge {
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .b-tt { background: #2a0808; color: #ff7777; border: 1px solid #3a1010; }
+  .b-ig { background: #1f0a2a; color: #c44dff; border: 1px solid #3a1545; }
+  .b-both { background: #1a1400; color: var(--gold); border: 1px solid var(--gold-dim); }
+  .b-dur { background: #0a180a; color: var(--green); border: 1px solid #1a3010; font-family: 'Montserrat', sans-serif; }
+
+  .sc-arrow { color: var(--gold-dim); font-size: 12px; transition: transform 0.2s; }
+  .sc.open .sc-arrow { transform: rotate(180deg); }
+
+  .sc-body { display: none; padding: 16px; }
+  .sc.open .sc-body { display: block; }
+
+  /* HOOK */
+  .hook-box {
+    background: #0d0d0d;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text);
+  }
+  .hook-label { font-size: 9px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; font-style: normal; margin-bottom: 4px; font-weight: 700; }
+
+  /* SHOT TABLE */
+  .shot-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .shot-table thead tr { background: #1a1a1a; }
+  .shot-table thead th {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: 700;
+  }
+  .shot-table tbody tr { border-bottom: 1px solid #1a1a1a; }
+  .shot-table tbody tr:hover { background: #111; }
+  .shot-table td { padding: 8px 10px; font-size: 12px; vertical-align: top; }
+  .td-time { color: var(--gold); font-weight: 700; font-family: 'Montserrat', sans-serif; white-space: nowrap; width: 55px; }
+  .td-frame { color: var(--muted); width: 35%; }
+  .td-text { color: var(--text); font-style: italic; }
+
+  /* NOTES */
+  .notes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .note { background: #111; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 11px; flex: 1; min-width: 140px; }
+  .note-k { color: var(--gold); font-weight: 700; margin-bottom: 3px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .note-v { color: var(--muted); }
+
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); margin: 16px 0; }
+
+  @media (max-width: 560px) {
+    .td-frame { display: none; }
+    .shot-table thead th:nth-child(2) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">6-Month Content Bible</div>
+  <h1>LUBOMIR<br><span>120 СЦЕНАРИЕВ</span></h1>
+  <div class="header-sub">Июль — Декабрь 2025 · 20 видео в месяц · TikTok + Instagram · Текст слово в слово</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('m1')">🔥 Июль</div>
+  <div class="tab" onclick="showTab('m2')">⚡ Август</div>
+  <div class="tab" onclick="showTab('m3')">🚀 Сентябрь</div>
+  <div class="tab" onclick="showTab('m4')">💰 Октябрь</div>
+  <div class="tab" onclick="showTab('m5')">🏆 Ноябрь</div>
+  <div class="tab" onclick="showTab('m6')">👑 Декабрь</div>
+</div>
+
+<!-- ═══════════════════════════ ИЮЛЬ -->
+<div id="m1" class="content active">
+  <div class="month-header">
+    <div>
+      <div class="month-title">Июль — <span>Старт</span></div>
+      <div class="month-focus">Фокус: знакомство с аудиторией, строим доверие, первые клиенты с блога. Тема: кто ты, твой путь, мышление.</div>
+    </div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="month-stat-val">20</div><div class="month-stat-label">Видео</div></div>
+      <div class="month-stat"><div class="month-stat-val">500</div><div class="month-stat-label">Цель TT</div></div>
+      <div class="month-stat"><div class="month-stat-val">200</div><div class="month-stat-label">Цель IG</div></div>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 1 — Знакомство</div>
+
+  <!-- В1 -->
+  <div class="sc" id="sc1">
+    <div class="sc-head" onclick="toggle('sc1')">
+      <div class="sc-left">
+        <div class="sc-num">ВИДЕО 01</div>
+        <div class="sc-title">Кто я и почему начинаю этот блог</div>
+      </div>
+      <div class="sc-right">
+        <span class="badge b-both">TT + IG</span>
+        <span class="badge b-dur">⏱ 45с</span>
+        <div class="sc-arrow">▼</div>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук — первые 3 секунды</div>«Мне 21 год. Я строю бизнес в Европе с нуля.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо крупно, смотришь в камеру</td><td class="td-text">«Мне 21 год. Я строю бизнес в Европе с нуля.»</td></tr>
+          <tr><td class="td-time">3–8с</td><td class="td-frame">Улица Эрдинга или дома у окна</td><td class="td-text">«Живу в Германии, сам, без связей, без стартового капитала.»</td></tr>
+          <tr><td class="td-time">8–16с</td><td class="td-frame">Ноутбук в кадре или экран с проектом</td><td class="td-text">«Я делаю сайты для бизнеса. Зарабатываю на этом. И начинаю строить личный бренд — публично.»</td></tr>
+          <tr><td class="td-time">16–28с</td><td class="td-frame">Снова лицо, уверенный взгляд</td><td class="td-text">«Буду показывать всё — клиентов, деньги, ошибки, рост. Без фильтров.»</td></tr>
+          <tr><td class="td-time">28–38с</td><td class="td-frame">Смотришь чуть в сторону, задумчиво</td><td class="td-text">«Я не знаю немецкого. Я украинец. Я один в чужой стране. Но я иду — и покажу каждый шаг.»</td></tr>
+          <tr><td class="td-time">38–45с</td><td class="td-frame">Прямо в камеру, близко</td><td class="td-text">«Если тебе 18–25 и ты хочешь строить что-то своё в Европе — подписывайся. Это будет честно.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Музыка</div><div class="note-v">CapCut → "cinematic motivation" — громкость 20%</div></div>
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">Подписывайся — покажу весь путь честно</div></div>
+        <div class="note"><div class="note-k">Совет</div><div class="note-v">Говори медленнее чем обычно. Паузы между фразами.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В2 -->
+  <div class="sc" id="sc2">
+    <div class="sc-head" onclick="toggle('sc2')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 02</div><div class="sc-title">Почему богатые не рассказывают как стали богатыми</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 40с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я знаю трёх парней моего возраста. Они зарабатывают десять тысяч евро в месяц. Ни один не объяснил мне как.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо крупно, серьёзный взгляд</td><td class="td-text">«Я знаю трёх парней моего возраста. Они зарабатывают десять тысяч евро в месяц. Ни один не объяснил мне как.»</td></tr>
+          <tr><td class="td-time">4–10с</td><td class="td-frame">Пауза, смотришь в камеру</td><td class="td-text">«Я долго думал — почему они молчат. И понял.»</td></tr>
+          <tr><td class="td-time">10–24с</td><td class="td-frame">Идёшь или стоишь, жестикулируешь</td><td class="td-text">«Они не скрывают специально. Просто то что они делают — невозможно объяснить в одном видео. Они построили активы. Пока они спят — деньги приходят. Это не формула. Это система которую строят годами.»</td></tr>
+          <tr><td class="td-time">24–34с</td><td class="td-frame">Снова лицо, ближе к камере</td><td class="td-text">«Я сейчас на этапе где моё время равно моим деньгам. Это фриланс. Это старт. Но цель — построить то что работает без меня.»</td></tr>
+          <tr><td class="td-time">34–40с</td><td class="td-frame">В камеру, прямо</td><td class="td-text">«Буду строить это публично. Подписывайся — посмотрим вместе получится или нет.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Музыка</div><div class="note-v">"dark trap beat" — громкость 15%</div></div>
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">«Сохрани если тоже думал об этом»</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В3 -->
+  <div class="sc" id="sc3">
+    <div class="sc-head" onclick="toggle('sc3')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 03</div><div class="sc-title">Мой день как фрилансер в Германии</div></div>
+      <div class="sc-right"><span class="badge b-ig">IG Reels</span><span class="badge b-dur">⏱ 30с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«День из жизни фрилансера в Германии. 21 год. Без офиса.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст / закадровый голос</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Ноутбук на столе, утро, кофе рядом</td><td class="td-text">«День из жизни фрилансера в Германии. 21 год. Без офиса.»</td></tr>
+          <tr><td class="td-time">3–9с</td><td class="td-frame">Экран ноутбука с сайтом или кодом</td><td class="td-text">«Утром — работа над проектом клиента. Никакого начальника.»</td></tr>
+          <tr><td class="td-time">9–17с</td><td class="td-frame">Улица, парк, любая локация снаружи</td><td class="td-text">«Днём выхожу подышать. Это тоже часть работы — голова должна отдыхать.»</td></tr>
+          <tr><td class="td-time">17–24с</td><td class="td-frame">Снова ноутбук или телефон, вечер</td><td class="td-text">«Вечером — новые задачи, новые клиенты, новые идеи.»</td></tr>
+          <tr><td class="td-time">24–30с</td><td class="td-frame">Ты в кадре, финал</td><td class="td-text">«Это моя жизнь сейчас. Строю её сам. Подписывайся — покажу как.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Формат</div><div class="note-v">Lifestyle b-roll без прямого разговора в камеру. Закадровый голос.</div></div>
+        <div class="note"><div class="note-k">Музыка</div><div class="note-v">"aesthetic vlog" — громкость 40%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В4 -->
+  <div class="sc" id="sc4">
+    <div class="sc-head" onclick="toggle('sc4')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 04</div><div class="sc-title">Что такое личный бренд — объясняю за 40 секунд</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 40с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Два одинаковых фрилансера. Один зарабатывает 500€, другой 5000€. Разница — не навыки.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Два одинаковых фрилансера. Один зарабатывает пятьсот евро, другой пять тысяч. Разница — не навыки.»</td></tr>
+          <tr><td class="td-time">3–14с</td><td class="td-frame">Жестикулируешь, объясняешь</td><td class="td-text">«Разница — личный бренд. Один из них — просто исполнитель. Другой — человек которому доверяют. К которому идут сами. За которым следят.»</td></tr>
+          <tr><td class="td-time">14–26с</td><td class="td-frame">Снова в камеру</td><td class="td-text">«Личный бренд — это когда тебя знают до того как ты что-то продаёшь. Когда клиент приходит сам и уже хочет работать именно с тобой.»</td></tr>
+          <tr><td class="td-time">26–34с</td><td class="td-frame">Чуть ближе к камере</td><td class="td-text">«Я строю свой бренд прямо сейчас. Публично. Ты видишь весь процесс.»</td></tr>
+          <tr><td class="td-time">34–40с</td><td class="td-frame">Финал</td><td class="td-text">«Подписывайся — покажу как это делается с нуля.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">«Сохрани — пригодится»</div></div>
+        <div class="note"><div class="note-k">Музыка</div><div class="note-v">"focus ambient" — громкость 15%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В5 -->
+  <div class="sc" id="sc5">
+    <div class="sc-head" onclick="toggle('sc5')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 05</div><div class="sc-title">Визуализация — работает или нет. Честно.</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я каждый день визуализирую богатство. Вот что реально происходит — и где люди ошибаются.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Я каждый день визуализирую богатство. Машина, квартира, окружение. Вот что реально происходит.»</td></tr>
+          <tr><td class="td-time">4–16с</td><td class="td-frame">Идёшь или стоишь</td><td class="td-text">«Визуализация работает — но не так как думает большинство. Она не притягивает деньги из воздуха. Она настраивает голову на нужную волну. Ты начинаешь видеть возможности которые раньше не замечал.»</td></tr>
+          <tr><td class="td-time">16–30с</td><td class="td-frame">В камеру</td><td class="td-text">«Но если после визуализации ты ложишься на диван — она бесполезна. Визуализация плюс действие — вот формула. Одна без другого не работает.»</td></tr>
+          <tr><td class="td-time">30–40с</td><td class="td-frame">Финал</td><td class="td-text">«Я визуализирую утром. И весь день делаю шаги в сторону этой картинки. Попробуй — разница будет.»</td></tr>
+          <tr><td class="td-time">40–45с</td><td class="td-frame">В камеру</td><td class="td-text">«Подписывайся — таких разговоров будет больше.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Тон</div><div class="note-v">Рассудительный, не коуч. Говоришь как человек который сам через это прошёл.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 2 — Экспертиза и честность</div>
+
+  <!-- В6 -->
+  <div class="sc" id="sc6">
+    <div class="sc-head" onclick="toggle('sc6')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 06</div><div class="sc-title">Как я нашёл первого клиента не зная немецкого</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я не говорю по-немецки. Мой первый клиент заплатил мне полторы тысячи евро.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо крупно</td><td class="td-text">«Я не говорю по-немецки. Мой первый клиент заплатил мне полторы тысячи евро.»</td></tr>
+          <tr><td class="td-time">3–12с</td><td class="td-frame">Телефон в руках или просто говоришь</td><td class="td-text">«Я написал холодное сообщение. На русском. Клиентка оказалась русскоязычной — живёт в Мюнхене, открыла свой бизнес. Мы совпали.»</td></tr>
+          <tr><td class="td-time">12–26с</td><td class="td-frame">Идёшь, жестикулируешь</td><td class="td-text">«Вот что я понял: язык — не барьер. Барьер — это когда ты не пишешь вообще. Я написал двадцать людям. Ответил один. Этот один стал первым клиентом.»</td></tr>
+          <tr><td class="td-time">26–38с</td><td class="td-frame">В камеру</td><td class="td-text">«Если ты думаешь что у тебя недостаточно знаний или языка — ты уже знаешь достаточно чтобы начать. Просто начни писать.»</td></tr>
+          <tr><td class="td-time">38–50с</td><td class="td-frame">Финал, уверенно</td><td class="td-text">«Нужен сайт для бизнеса — пиши в директ. Сделаю так же.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Ключевое</div><div class="note-v">Результат в первые 3 секунды — не предыстория</div></div>
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">Прямой — нужен сайт, пиши в директ</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В7 -->
+  <div class="sc" id="sc7">
+    <div class="sc-head" onclick="toggle('sc7')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 07</div><div class="sc-title">Одиночество когда строишь бизнес — никто не говорит об этом</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я гуляю один каждый день. Буквально — некому позвонить.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Ты идёшь один по улице</td><td class="td-text">«Я гуляю один каждый день. Буквально — некому позвонить.»</td></tr>
+          <tr><td class="td-time">4–14с</td><td class="td-frame">Лицо, честный взгляд</td><td class="td-text">«Родители заняты. Друзья далеко. Здесь в Германии я один. И это реально тяжело — я не буду делать вид что это легко.»</td></tr>
+          <tr><td class="td-time">14–28с</td><td class="td-frame">Идёшь дальше, город вокруг</td><td class="td-text">«Но я заметил кое-что. Именно в этом одиночестве я думаю яснее. Я не отвлекаюсь. Я строю. Может это и есть цена за то что будет потом.»</td></tr>
+          <tr><td class="td-time">28–38с</td><td class="td-frame">Останавливаешься, в камеру</td><td class="td-text">«Я превратил одиночество в топливо. Есть люди которые вернутся когда всё получится. Я помню кто был рядом когда ничего не было.»</td></tr>
+          <tr><td class="td-time">38–45с</td><td class="td-frame">Продолжаешь идти</td><td class="td-text">«Если ты тоже строишь что-то один — ты не один в этом. Подписывайся.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Тон</div><div class="note-v">Честный, тихий. Не мотивационный спич. Говори как другу.</div></div>
+        <div class="note"><div class="note-k">Музыка</div><div class="note-v">"lofi sad" или "emotional piano" — громкость 25%</div></div>
+        <div class="note"><div class="note-k">Эффект</div><div class="note-v">Максимальные комментарии. Люди узнают себя.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В8 -->
+  <div class="sc" id="sc8">
+    <div class="sc-head" onclick="toggle('sc8')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 08</div><div class="sc-title">3 ошибки из-за которых фрилансеры не зарабатывают</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я сам совершил все три. Стоило мне это нескольких тысяч евро.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Три ошибки которые я сам совершил. Стоило мне это нескольких тысяч евро.»</td></tr>
+          <tr><td class="td-time">3–16с</td><td class="td-frame">Говоришь, один палец вверх</td><td class="td-text">«Первая — работал без предоплаты. Клиент пропал после того как я сделал всю работу. Никогда. Больше. Без предоплаты.»</td></tr>
+          <tr><td class="td-time">16–30с</td><td class="td-frame">Два пальца</td><td class="td-text">«Вторая — не было портфолио. Когда тебя спрашивают "покажи работы" а ты молчишь — клиент уходит. Сделай хотя бы один сайт для себя или бесплатно для знакомого. Это и есть старт.»</td></tr>
+          <tr><td class="td-time">30–44с</td><td class="td-frame">Три пальца</td><td class="td-text">«Третья — боялся называть цену. Говорил "как вам удобно" вместо чёткой суммы. Это убивает доверие. Клиент хочет видеть уверенного человека.»</td></tr>
+          <tr><td class="td-time">44–50с</td><td class="td-frame">Финал</td><td class="td-text">«Сохрани — пригодится когда будешь искать первого клиента.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Формат</div><div class="note-v">Список — легко смотреть и сохранять</div></div>
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">«Сохрани»</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В9 -->
+  <div class="sc" id="sc9">
+    <div class="sc-head" onclick="toggle('sc9')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 09</div><div class="sc-title">Почему я переехал из Украины в Европу в 20 лет</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«В 20 лет я уехал из Украины в Германию. Один. Без языка. Вот почему.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«В двадцать лет я уехал из Украины в Германию. Один. Без языка. Вот почему.»</td></tr>
+          <tr><td class="td-time">4–18с</td><td class="td-frame">Идёшь или стоишь</td><td class="td-text">«Дома всё было понятно. Понятно кем стану, что буду делать, как буду жить. Мне стало страшно от этой понятности. Я хотел другого.»</td></tr>
+          <tr><td class="td-time">18–34с</td><td class="td-frame">В камеру</td><td class="td-text">«Европа — это не про деньги. Это про возможности. Тут ты никто — и это лучшее что может быть. Потому что ты можешь стать кем захочешь. Без ярлыков, без чужих ожиданий.»</td></tr>
+          <tr><td class="td-time">34–46с</td><td class="td-frame">Задумчиво</td><td class="td-text">«Было тяжело? Да. Жалею? Ни секунды.»</td></tr>
+          <tr><td class="td-time">46–50с</td><td class="td-frame">Финал</td><td class="td-text">«Подписывайся — расскажу больше про жизнь в Европе с нуля.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Эффект</div><div class="note-v">Резонирует с эмигрантами и теми кто хочет уехать — огромная аудитория</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- В10 -->
+  <div class="sc" id="sc10">
+    <div class="sc-head" onclick="toggle('sc10')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 10</div><div class="sc-title">Что я бы сказал себе в 18 лет</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Если бы я мог вернуться в 18 — вот три вещи которые я бы сказал себе.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Если бы я мог вернуться в восемнадцать — вот три вещи которые я бы сказал себе.»</td></tr>
+          <tr><td class="td-time">3–16с</td><td class="td-frame">Говоришь, один палец</td><td class="td-text">«Первое — начни раньше. Не жди когда будешь готов. Готовым не становятся — становятся опытным. А опыт только через действие.»</td></tr>
+          <tr><td class="td-time">16–30с</td><td class="td-frame">Два пальца</td><td class="td-text">«Второе — окружение решает всё. Посмотри на пятерых людей рядом с тобой — это твоё будущее. Меняй окружение если оно тянет вниз.»</td></tr>
+          <tr><td class="td-time">30–42с</td><td class="td-frame">Три пальца</td><td class="td-text">«Третье — деньги это не цель. Деньги это инструмент. Строй что-то что важно — деньги придут как следствие.»</td></tr>
+          <tr><td class="td-time">42–45с</td><td class="td-frame">Финал</td><td class="td-text">«Подписывайся — таких мыслей будет больше.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Формат</div><div class="note-v">Список из трёх — хорошо сохраняют</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 3 — Портфолио и переезд</div>
+
+  <!-- В11-15 краткие (раскрываемые) -->
+  <div class="sc" id="sc11">
+    <div class="sc-head" onclick="toggle('sc11')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 11</div><div class="sc-title">Показываю сайт который сделал клиенту (до/после)</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 35с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Месяц работы. Вот что получилось.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо в камеру</td><td class="td-text">«Месяц работы. Вот что получилось.»</td></tr>
+          <tr><td class="td-time">3–22с</td><td class="td-frame">Screen record сайта — прокручиваешь</td><td class="td-text">«Это сайт для премиального бренда. Мюнхен. Дизайн, каталог, оформление — всё с нуля. Клиентка довольна.»</td></tr>
+          <tr><td class="td-time">22–30с</td><td class="td-frame">Снова ты в кадре</td><td class="td-text">«Портфолио растёт. Следующий проект уже в работе.»</td></tr>
+          <tr><td class="td-time">30–35с</td><td class="td-frame">В камеру прямо</td><td class="td-text">«Нужен сайт для бизнеса — пиши в директ.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Важно</div><div class="note-v">Screen record: iPhone → Пункт управления → Запись экрана</div></div>
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">Прямой — нужен сайт, пиши в директ</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc12">
+    <div class="sc-head" onclick="toggle('sc12')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 12</div><div class="sc-title">Сколько реально стоит жизнь в Германии</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Все думают что жизнь в Германии — это дорого. Вот реальные цифры.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо прямо</td><td class="td-text">«Все думают что жизнь в Германии — это дорого. Вот реальные цифры.»</td></tr>
+          <tr><td class="td-time">3–20с</td><td class="td-frame">Говоришь, можно показывать пальцами</td><td class="td-text">«Аренда комнаты — от 600 до 900 евро в месяц. Еда если готовить сам — 200–300 евро. Транспорт — 50 евро. Телефон и интернет — ещё 30–50. Итого — реально жить на 1000–1300 евро в месяц.»</td></tr>
+          <tr><td class="td-time">20–35с</td><td class="td-frame">В камеру</td><td class="td-text">«Это не роскошь — но это свобода. Сам зарабатываешь, сам решаешь. Без начальника, без расписания.»</td></tr>
+          <tr><td class="td-time">35–45с</td><td class="td-frame">Финал</td><td class="td-text">«Подписывайся — скоро расскажу про Варшаву. Там цифры другие — и возможности тоже.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Польза</div><div class="note-v">Практичный контент — высокая сохраняемость</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc13">
+    <div class="sc-head" onclick="toggle('sc13')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 13</div><div class="sc-title">Почему окружение важнее таланта</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 40с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Средний человек в окружении сильных людей — станет сильным. Сильный человек в окружении средних — опустится.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Средний человек в окружении сильных людей — станет сильным. Сильный человек в окружении средних — опустится. Это не теория — это факт.»</td></tr>
+          <tr><td class="td-time">4–18с</td><td class="td-frame">Идёшь или говоришь</td><td class="td-text">«Я переехал в Европу не только за деньгами. За окружением. Здесь другой уровень амбиций. Люди думают иначе. Говорят о возможностях а не об ограничениях.»</td></tr>
+          <tr><td class="td-time">18–32с</td><td class="td-frame">В камеру</td><td class="td-text">«Посмотри на пятерых людей с которыми проводишь больше всего времени. Это и есть твоё будущее через три года.»</td></tr>
+          <tr><td class="td-time">32–40с</td><td class="td-frame">Финал</td><td class="td-text">«Меняй окружение — изменится всё остальное.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Тон</div><div class="note-v">Уверенный, но не поучительный. Личный опыт.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc14">
+    <div class="sc-head" onclick="toggle('sc14')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 14</div><div class="sc-title">Переезжаю в Варшаву — почему ухожу из Германии</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я живу в Германии. И я уезжаю. Вот почему.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Я живу в Германии. И я уезжаю. Вот почему.»</td></tr>
+          <tr><td class="td-time">3–16с</td><td class="td-frame">Улица, снаружи</td><td class="td-text">«Германия — шикарная страна. Стабильная, безопасная, богатая. Но мне сейчас нужно не стабильность. Мне нужна энергия.»</td></tr>
+          <tr><td class="td-time">16–32с</td><td class="td-frame">В камеру, объясняешь</td><td class="td-text">«Варшава — это движение. Там огромное русскоязычное сообщество. Предприниматели, молодые, амбициозные. Я хочу окружение которое тянет вверх. В Германии я один. В Варшаве — у меня уже есть люди.»</td></tr>
+          <tr><td class="td-time">32–44с</td><td class="td-frame">Задумчиво</td><td class="td-text">«Это не побег. Это осознанный шаг. Новый город — новая глава.»</td></tr>
+          <tr><td class="td-time">44–50с</td><td class="td-frame">Финал</td><td class="td-text">«Покажу весь переезд. Подписывайся чтобы не пропустить.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Эффект</div><div class="note-v">Создаёт сюжет — аудитория будет ждать видео из Варшавы</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc15">
+    <div class="sc-head" onclick="toggle('sc15')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 15</div><div class="sc-title">Мой режим дня который даёт продуктивность</div></div>
+      <div class="sc-right"><span class="badge b-ig">IG Reels</span><span class="badge b-dur">⏱ 35с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я не использую будильник. Вот как выглядит мой день.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Утро, ты встаёшь или уже за ноутом</td><td class="td-text">«Я не использую будильник. Вот как выглядит мой день фрилансера.»</td></tr>
+          <tr><td class="td-time">3–10с</td><td class="td-frame">Утро — кофе, ноутбук</td><td class="td-text">«Утро — самое продуктивное время. Первые два часа только работа. Телефон в сторону.»</td></tr>
+          <tr><td class="td-time">10–18с</td><td class="td-frame">День — прогулка, улица</td><td class="td-text">«Обед — прогулка. Обязательно. Движение перезапускает голову.»</td></tr>
+          <tr><td class="td-time">18–26с</td><td class="td-frame">Вечер — снова ноутбук</td><td class="td-text">«Вечером — второй блок работы. Поиск клиентов, переписки, планирование.»</td></tr>
+          <tr><td class="td-time">26–35с</td><td class="td-frame">Финал</td><td class="td-text">«Нет идеального режима — есть твой режим. Найди что работает для тебя.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Формат</div><div class="note-v">Lifestyle b-roll + закадровый голос. Лёгкий контент.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 4 — Итоги и планы</div>
+
+  <div class="sc" id="sc16">
+    <div class="sc-head" onclick="toggle('sc16')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 16</div><div class="sc-title">Как я нахожу клиентов через интернет без рекламы</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Ноль евро на рекламу. Вот как я нахожу клиентов.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Ноль евро на рекламу. Вот как я нахожу клиентов.»</td></tr>
+          <tr><td class="td-time">3–18с</td><td class="td-frame">Говоришь, телефон в руках</td><td class="td-text">«Первый способ — холодные сообщения. Нахожу бизнес без сайта в Instagram или Google Maps. Пишу лично. Коротко, конкретно, с примером работы.»</td></tr>
+          <tr><td class="td-time">18–32с</td><td class="td-frame">В камеру</td><td class="td-text">«Второй способ — личный бренд. Этот блог. Люди смотрят, видят что я делаю, пишут сами. Это лучший способ — но требует времени.»</td></tr>
+          <tr><td class="td-time">32–44с</td><td class="td-frame">Продолжаешь</td><td class="td-text">«Третий — рекомендации. Один клиент доволен — рассказывает двум друзьям. Это самый дешёвый и самый мощный канал.»</td></tr>
+          <tr><td class="td-time">44–50с</td><td class="td-frame">Финал</td><td class="td-text">«Сохрани — пригодится.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Польза</div><div class="note-v">Практичный контент — высокие сохранения</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc17">
+    <div class="sc-head" onclick="toggle('sc17')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 17</div><div class="sc-title">5 приложений которые использую каждый день</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 40с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Пять приложений без которых мой бизнес не работает.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо или телефон в кадре</td><td class="td-text">«Пять приложений без которых мой бизнес не работает.»</td></tr>
+          <tr><td class="td-time">3–10с</td><td class="td-frame">Показываешь экран</td><td class="td-text">«Notion — всё планирование, клиенты, задачи. Бесплатно.»</td></tr>
+          <tr><td class="td-time">10–18с</td><td class="td-frame">Следующий экран</td><td class="td-text">«CapCut — монтаж видео. Всё что ты видишь сделано в нём.»</td></tr>
+          <tr><td class="td-time">18–25с</td><td class="td-frame">Следующий</td><td class="td-text">«ChatGPT — помогает с текстами, идеями, переводами.»</td></tr>
+          <tr><td class="td-time">25–32с</td><td class="td-frame">Следующий</td><td class="td-text">«Canva — быстрые визуалы для постов и презентаций.»</td></tr>
+          <tr><td class="td-time">32–40с</td><td class="td-frame">Финал в камеру</td><td class="td-text">«И Telegram — для связи с клиентами. Все деловые переписки там. Сохрани список.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Формат</div><div class="note-v">Список — очень высокая сохраняемость. Один из лучших форматов.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc18">
+    <div class="sc-head" onclick="toggle('sc18')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 18</div><div class="sc-title">Что значит строить личный бренд в 21 год</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Большинство в моём возрасте строят карьеру. Я строю бренд. Разница огромная.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Большинство в моём возрасте строят карьеру. Я строю бренд. Разница огромная.»</td></tr>
+          <tr><td class="td-time">4–18с</td><td class="td-frame">Говоришь</td><td class="td-text">«Карьера — это когда ты ценен для одного работодателя. Бренд — это когда ты ценен для рынка. Карьера заканчивается когда тебя увольняют. Бренд — никогда.»</td></tr>
+          <tr><td class="td-time">18–34с</td><td class="td-frame">В камеру</td><td class="td-text">«Я начал строить бренд сейчас — в 21. Да у меня нет больших результатов. Но есть история. И люди подписываются на историю — не на результат.»</td></tr>
+          <tr><td class="td-time">34–45с</td><td class="td-frame">Финал</td><td class="td-text">«Через два года этот блог будет стоить больше чем любая зарплата. Посмотрим.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Тон</div><div class="note-v">Уверенный, не высокомерный. Ты делаешь — не хвастаешься.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc19">
+    <div class="sc-head" onclick="toggle('sc19')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 19</div><div class="sc-title">Честно про страх и неопределённость</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я боюсь. Каждый день. И продолжаю делать.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, честно</td><td class="td-text">«Я боюсь. Каждый день. И продолжаю делать.»</td></tr>
+          <tr><td class="td-time">3–16с</td><td class="td-frame">Говоришь, спокойно</td><td class="td-text">«Страх что не получится. Что деньги закончатся. Что я выбрал не тот путь. Эти мысли есть — я не буду делать вид что их нет.»</td></tr>
+          <tr><td class="td-time">16–30с</td><td class="td-frame">В камеру</td><td class="td-text">«Но я понял одну вещь. Страх — это сигнал что ты двигаешься в правильном направлении. Когда страшно — значит ставки реальные. Значит это важно.»</td></tr>
+          <tr><td class="td-time">30–40с</td><td class="td-frame">Продолжаешь</td><td class="td-text">«Храбрость — это не отсутствие страха. Это действие несмотря на страх.»</td></tr>
+          <tr><td class="td-time">40–45с</td><td class="td-frame">Финал</td><td class="td-text">«Если тебе тоже страшно — ты на правильном пути. Подписывайся.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Тон</div><div class="note-v">Максимально честный. Это самый человечный контент — даёт доверие.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc20">
+    <div class="sc-head" onclick="toggle('sc20')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 20</div><div class="sc-title">Итоги первого месяца блога — честные цифры</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Месяц блога. Двадцать видео. Вот честные цифры.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Месяц блога. Двадцать видео. Вот честные цифры.»</td></tr>
+          <tr><td class="td-time">3–16с</td><td class="td-frame">Экран телефона со статистикой</td><td class="td-text">«[вставь реальные цифры] подписчиков на TikTok. [X] на Instagram. Лучшее видео — [название] — набрало [Y] просмотров.»</td></tr>
+          <tr><td class="td-time">16–30с</td><td class="td-frame">В камеру, разбираешь</td><td class="td-text">«Что сработало: честные видео про одиночество и мышление. Что не зашло: слишком длинные форматы. Вывод — короче и честнее.»</td></tr>
+          <tr><td class="td-time">30–42с</td><td class="td-frame">Продолжаешь</td><td class="td-text">«Пришёл один запрос на сайт через блог. Это уже результат которого не было месяц назад.»</td></tr>
+          <tr><td class="td-time">42–50с</td><td class="td-frame">Финал</td><td class="td-text">«Через месяц покажу следующие цифры. Цель — [называешь свою цель]. Посмотрим.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Важно</div><div class="note-v">Реальные цифры — даже маленькие. Честность строит доверие сильнее больших чисел.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════ АВГУСТ -->
+<div id="m2" class="content">
+  <div class="month-header">
+    <div>
+      <div class="month-title">Август — <span>Рост</span></div>
+      <div class="month-focus">Фокус: углубляем доверие, показываем экспертизу, первая монетизация. Темы: бизнес-инсайты, переезд в Варшаву, первые разборы.</div>
+    </div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="month-stat-val">20</div><div class="month-stat-label">Видео</div></div>
+      <div class="month-stat"><div class="month-stat-val">2K</div><div class="month-stat-label">Цель TT</div></div>
+      <div class="month-stat"><div class="month-stat-val">600</div><div class="month-stat-label">Цель IG</div></div>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 5</div>
+
+  <div class="sc" id="sc21">
+    <div class="sc-head" onclick="toggle('sc21')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 21</div><div class="sc-title">Итоги первого месяца блога — что изменилось</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Месяц прошёл. Вот что реально изменилось — не только в цифрах.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Месяц прошёл. Вот что реально изменилось — не только в цифрах.»</td></tr>
+          <tr><td class="td-time">3–18с</td><td class="td-frame">Говоришь</td><td class="td-text">«Подписчики — это одно. Но важнее другое. Я стал думать иначе. Каждый день я ищу что снять, что сказать, как помочь аудитории. Это меняет голову.»</td></tr>
+          <tr><td class="td-time">18–34с</td><td class="td-frame">В камеру</td><td class="td-text">«Ко мне написали два человека с вопросами про сайты. Один стал клиентом. Это произошло через блог. Без холодных сообщений.»</td></tr>
+          <tr><td class="td-time">34–46с</td><td class="td-frame">Финал</td><td class="td-text">«Второй месяц — Варшава, новые клиенты, первая монетизация блога. Подписывайся чтобы видеть весь путь.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes"><div class="note"><div class="note-k">Эффект</div><div class="note-v">Аудитория видит рост — это удерживает подписчиков</div></div></div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc22">
+    <div class="sc-head" onclick="toggle('sc22')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 22</div><div class="sc-title">Как я строю сайт за 3–5 дней — весь процесс</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 50с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«От договора до готового сайта — пять дней. Показываю весь процесс.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, ноутбук рядом</td><td class="td-text">«От договора до готового сайта — пять дней. Показываю весь процесс.»</td></tr>
+          <tr><td class="td-time">3–14с</td><td class="td-frame">Говоришь, один палец</td><td class="td-text">«День первый — бриф. Узнаю всё о бизнесе клиента: кто аудитория, какие цели, какой стиль. Это основа всего.»</td></tr>
+          <tr><td class="td-time">14–26с</td><td class="td-frame">Два пальца, экран ноутбука</td><td class="td-text">«День второй-третий — дизайн и разработка. Делаю структуру, добавляю контент, настраиваю мобильную версию.»</td></tr>
+          <tr><td class="td-time">26–38с</td><td class="td-frame">Три пальца</td><td class="td-text">«День четвёртый — правки клиента. Всегда есть что поправить — это нормально. Один круг правок включён в цену.»</td></tr>
+          <tr><td class="td-time">38–50с</td><td class="td-frame">Финал в камеру</td><td class="td-text">«День пятый — сдача. Клиент доволен. Оплата получена. Следующий.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">CTA</div><div class="note-v">«Нужен сайт — пиши в директ»</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc" id="sc23">
+    <div class="sc-head" onclick="toggle('sc23')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 23</div><div class="sc-title">Почему я не нанимаю команду — пока</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Все советуют масштабироваться. Нанять команду. Я объясню почему это ошибка — сейчас.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Все советуют масштабироваться. Нанять команду. Я объясню почему это ошибка — сейчас.»</td></tr>
+          <tr><td class="td-time">4–18с</td><td class="td-frame">Говоришь</td><td class="td-text">«Нанять человека когда у тебя нет стабильного потока клиентов — это не масштаб. Это расход. Сначала нужна система. Потом команда.»</td></tr>
+          <tr><td class="td-time">18–32с</td><td class="td-frame">В камеру</td><td class="td-text">«Я сейчас строю систему. Личный бренд приводит клиентов. Портфолио даёт доверие. Процесс отточен. Только после этого — команда.»</td></tr>
+          <tr><td class="td-time">32–45с</td><td class="td-frame">Финал</td><td class="td-text">«Не торопись масштабировать хаос. Сначала наведи порядок — потом масштабируй порядок.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sc" id="sc24">
+    <div class="sc-head" onclick="toggle('sc24')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 24</div><div class="sc-title">Правда про холодные сообщения — почему не отвечают</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я написал 50 холодных сообщений. Ответили двое. Вот в чём была проблема.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Я написал пятьдесят холодных сообщений. Ответили двое. Вот в чём была проблема.»</td></tr>
+          <tr><td class="td-time">4–18с</td><td class="td-frame">Говоришь</td><td class="td-text">«Я писал слишком в лоб. "Хочу сделать вам сайт, цена от трёхсот евро." Представь — тебе пишет незнакомый человек и сразу предлагает потратить деньги. Ты закрываешь сообщение.»</td></tr>
+          <tr><td class="td-time">18–34с</td><td class="td-frame">В камеру</td><td class="td-text">«Правильный подход — сначала интерес, потом предложение. Найди что-то конкретное в их бизнесе. Задай вопрос. Начни разговор. Потом — предложение.»</td></tr>
+          <tr><td class="td-time">34–45с</td><td class="td-frame">Финал</td><td class="td-text">«Холодные сообщения работают. Просто большинство делает это неправильно.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sc" id="sc25">
+    <div class="sc-head" onclick="toggle('sc25')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 25</div><div class="sc-title">Деньги которые я трачу на бизнес каждый месяц</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 40с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Сколько реально стоит вести онлайн-бизнес. Мои расходы.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Сколько реально стоит вести онлайн-бизнес. Мои расходы.»</td></tr>
+          <tr><td class="td-time">3–28с</td><td class="td-frame">Говоришь, загибаешь пальцы</td><td class="td-text">«Shopify или хостинг для клиентов — платит клиент, не я. ChatGPT Plus — двадцать евро в месяц. Figma — бесплатно. Canva Pro — тринадцать евро. Домен для портфолио — десять евро в год. Итого мои расходы на бизнес — около тридцати пяти евро в месяц.»</td></tr>
+          <tr><td class="td-time">28–40с</td><td class="td-frame">Финал</td><td class="td-text">«Онлайн-бизнес — один из немногих где можно начать почти без вложений. Этим и пользуюсь.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 6 — Варшава и окружение</div>
+
+  <div class="sc" id="sc26">
+    <div class="sc-head" onclick="toggle('sc26')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 26</div><div class="sc-title">Окружение которое тебя убивает</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Самые токсичные люди в твоей жизни — не враги. Это близкие.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, серьёзно</td><td class="td-text">«Самые токсичные люди в твоей жизни — не враги. Это близкие.»</td></tr>
+          <tr><td class="td-time">3–18с</td><td class="td-frame">Идёшь, говоришь</td><td class="td-text">«Те кто говорит "зачем тебе это", "не получится", "лучше иди работать нормально". Они не желают плохого. Они просто боятся за тебя. Но их страх становится твоим потолком если ты слушаешь.»</td></tr>
+          <tr><td class="td-time">18–34с</td><td class="td-frame">Останавливаешься</td><td class="td-text">«Я уехал один в другую страну. Это лучшее что я сделал. Не потому что семья плохая. А потому что в тишине я слышу себя.»</td></tr>
+          <tr><td class="td-time">34–45с</td><td class="td-frame">В камеру</td><td class="td-text">«Выбирай окружение осознанно. Это не эгоизм. Это инвестиция в себя.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sc" id="sc27">
+    <div class="sc-head" onclick="toggle('sc27')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 27</div><div class="sc-title">Первое видео из Варшавы</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 40с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я в Варшаве. Вот почему этот город другой.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Улица Варшавы, красивый кадр</td><td class="td-text">«Я в Варшаве. Вот почему этот город другой.»</td></tr>
+          <tr><td class="td-time">3–16с</td><td class="td-frame">Прогулка по Варшаве</td><td class="td-text">«Здесь другая энергия. Город молодой, динамичный. За три дня я познакомился с предпринимателями которых в Германии не встречал за год.»</td></tr>
+          <tr><td class="td-time">16–30с</td><td class="td-frame">Ты в кадре</td><td class="td-text">«Русскоязычное сообщество здесь огромное. Украинцы, русские, белорусы — все строят что-то своё. Это моя аудитория. Я дома.»</td></tr>
+          <tr><td class="td-time">30–40с</td><td class="td-frame">Финал</td><td class="td-text">«Новая глава. Подписывайся — покажу жизнь в Варшаве изнутри.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sc" id="sc28">
+    <div class="sc-head" onclick="toggle('sc28')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 28</div><div class="sc-title">Сколько стоит жизнь молодого предпринимателя в Европе</div></div>
+      <div class="sc-right"><span class="badge b-tt">TikTok</span><span class="badge b-dur">⏱ 45с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Аренда, еда, сервисы, телефон — вот реальные цифры жизни в Европе.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Лицо, прямо</td><td class="td-text">«Аренда, еда, сервисы, телефон — вот реальные цифры жизни в Европе.»</td></tr>
+          <tr><td class="td-time">3–22с</td><td class="td-frame">Говоришь</td><td class="td-text">«Варшава: хорошая квартира — от пятисот до восьмисот евро. Еда если готовить — сто пятьдесят евро. Транспорт — тридцать. Это около тысячи евро на жизнь. В Мюнхене та же квартира стоила бы тысячу двести. Разница огромная.»</td></tr>
+          <tr><td class="td-time">22–36с</td><td class="td-frame">В камеру</td><td class="td-text">«На тысячу двести евро в месяц в Варшаве можно жить хорошо. И при этом откладывать и инвестировать в бизнес.»</td></tr>
+          <tr><td class="td-time">36–45с</td><td class="td-frame">Финал</td><td class="td-text">«Выбор города — это тоже бизнес-решение. Сохрани если думаешь о переезде.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sc" id="sc29">
+    <div class="sc-head" onclick="toggle('sc29')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 29</div><div class="sc-title">Как я провожу воскресенье — день без работы</div></div>
+      <div class="sc-right"><span class="badge b-ig">IG Reels</span><span class="badge b-dur">⏱ 30с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Воскресенье — день без ноутбука. Вот как я восстанавливаюсь.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–3с</td><td class="td-frame">Утро, ленивое пробуждение</td><td class="td-text">«Воскресенье — день без ноутбука. Без задач. Только восстановление.»</td></tr>
+          <tr><td class="td-time">3–12с</td><td class="td-frame">Кофе, прогулка, город</td><td class="td-text">«Прогулка без цели. Кофе в кафе. Просто быть — без плана.»</td></tr>
+          <tr><td class="td-time">12–22с</td><td class="td-frame">Бильярд или другое хобби</td><td class="td-text">«Бильярд — моё. Это не отдых, это перезагрузка. Голова полностью отключается.»</td></tr>
+          <tr><td class="td-time">22–30с</td><td class="td-frame">Финал</td><td class="td-text">«Отдых — это тоже часть продуктивности. Не забывай.»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sc" id="sc30">
+    <div class="sc-head" onclick="toggle('sc30')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 30</div><div class="sc-title">Бильярд научил меня бизнесу — серьёзно</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><span class="badge b-dur">⏱ 55с</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div class="hook-box"><div class="hook-label">Хук</div>«Я профессиональный бильярдист. И бильярд научил меня зарабатывать деньги.»</div>
+      <table class="shot-table">
+        <thead><tr><th>Время</th><th>Кадр</th><th>Текст слово в слово</th></tr></thead>
+        <tbody>
+          <tr><td class="td-time">0–4с</td><td class="td-frame">Ты за бильярдным столом, бьёшь шар</td><td class="td-text">«Я профессиональный бильярдист. И бильярд научил меня зарабатывать деньги.»</td></tr>
+          <tr><td class="td-time">4–20с</td><td class="td-frame">Стол крупно, потом ты</td><td class="td-text">«Первое. В бильярде думаешь на три хода вперёд. В бизнесе то же самое. Не реагируй на сегодня — думай что будет через месяц.»</td></tr>
+          <tr><td class="td-time">20–36с</td><td class="td-frame">Снова удар, потом разговор</td><td class="td-text">«Второе. Один плохой удар — не проигрыш. Плохая серия — проигрыш. В бизнесе один плохой месяц — нормально. Сдаться после него — ошибка.»</td></tr>
+          <tr><td class="td-time">36–50с</td><td class="td-frame">В камеру стоя у стола</td><td class="td-text">«Третье. Техника решает больше чем сила. В бизнесе стратегия решает больше чем усилия. Работай умнее.»</td></tr>
+          <tr><td class="td-time">50–55с</td><td class="td-frame">Финал</td><td class="td-text">«Подписывайся — таких видео больше ни у кого нет.»</td></tr>
+        </tbody>
+      </table>
+      <div class="notes">
+        <div class="note"><div class="note-k">Уникальность</div><div class="note-v">Бильярд + бизнес — такого нет ни у кого в нише. Снимай в клубе.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-label">Неделя 7–8 — Монетизация и масштаб</div>
+
+  <div class="sc" id="sc31">
+    <div class="sc-head" onclick="toggle('sc31')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 31–40</div><div class="sc-title">Темы для недель 7–8 (разворачивай для деталей)</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div style="color:var(--muted); font-size:13px; line-height:2">
+        <b style="color:#fff">31.</b> Как выставить цену на сайт — формула (TT, 40с)<br>
+        <b style="color:#fff">32.</b> Что такое Shopify и кому он нужен (TT, 45с)<br>
+        <b style="color:#fff">33.</b> Мой первый заработок в интернете — история (TT+IG, 50с)<br>
+        <b style="color:#fff">34.</b> Варшава vs Мюнхен — где лучше для предпринимателя (TT+IG, 50с)<br>
+        <b style="color:#fff">35.</b> Как я готовлюсь к встрече с клиентом (IG Reels, 35с)<br>
+        <b style="color:#fff">36.</b> Три книги которые изменили моё мышление (TT, 45с)<br>
+        <b style="color:#fff">37.</b> Почему фриланс лучше работы в найме — в 21 год (TT+IG, 45с)<br>
+        <b style="color:#fff">38.</b> День когда я хотел всё бросить — честно (TT, 50с)<br>
+        <b style="color:#fff">39.</b> Анонс: беру 3 человека на разбор бизнеса (TT+IG, 40с)<br>
+        <b style="color:#fff">40.</b> Итоги второго месяца — цифры, деньги, выводы (TT+IG, 50с)
+      </div>
+      <div class="notes" style="margin-top:14px">
+        <div class="note"><div class="note-k">Видео 38</div><div class="note-v">«День когда хотел всё бросить» — самое важное для доверия. Не пропускай.</div></div>
+        <div class="note"><div class="note-k">Видео 39</div><div class="note-v">Первая монетизация — 3 места по 150€. Пиши «РАЗБОР» в директ.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════ СЕНТЯБРЬ -->
+<div id="m3" class="content">
+  <div class="month-header">
+    <div>
+      <div class="month-title">Сентябрь — <span>Монетизация</span></div>
+      <div class="month-focus">Фокус: запуск наставничества, углубление доверия, Варшава как новая база. Первые реальные деньги с блога.</div>
+    </div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="month-stat-val">20</div><div class="month-stat-label">Видео</div></div>
+      <div class="month-stat"><div class="month-stat-val">5K</div><div class="month-stat-label">Цель TT</div></div>
+      <div class="month-stat"><div class="month-stat-val">1.5K</div><div class="month-stat-label">Цель IG</div></div>
+    </div>
+  </div>
+
+  <div class="week-label">Темы сентября — 20 видео</div>
+
+  <div class="sc" id="sc_sep">
+    <div class="sc-head" onclick="toggle('sc_sep')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 41–60</div><div class="sc-title">Все 20 тем сентября с хуками</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div style="color:var(--muted); font-size:13px; line-height:2.2">
+        <b style="color:#fff">41.</b> 2 месяца блога — итоги, цифры, что изменилось<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Два месяца. Вот реальные цифры и что я понял.»</span><br><br>
+        <b style="color:#fff">42.</b> Как найти первого клиента на сайт — пошагово<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Никаких связей, никакого бюджета. Вот как за неделю.»</span><br><br>
+        <b style="color:#fff">43.</b> Жизнь в Варшаве — первый месяц честно<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Переехал. Вот что никто не говорит про Варшаву.»</span><br><br>
+        <b style="color:#fff">44.</b> Как я зарабатываю в интернете живя в Европе<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Мне 21. Я не хожу в офис. Вот откуда деньги.»</span><br><br>
+        <b style="color:#fff">45.</b> Что такое агентство и зачем мне оно нужно<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я фрилансер. Но хочу стать агентством. Разница огромная.»</span><br><br>
+        <b style="color:#fff">46.</b> Как я нашёл нормальное окружение в чужой стране<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Переехать легко. Найти своих людей — сложно. Вот как я это сделал.»</span><br><br>
+        <b style="color:#fff">47.</b> Почему контент важнее рекламы<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Этот блог уже принёс мне клиентов. Без единого евро на рекламу.»</span><br><br>
+        <b style="color:#fff">48.</b> Мой план на следующие 6 месяцев<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Вот куда я иду. Конкретно.»</span><br><br>
+        <b style="color:#fff">49.</b> Ошибка которая стоила мне клиента<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я потерял клиента из-за одной фразы. Вот какой.»</span><br><br>
+        <b style="color:#fff">50.</b> Что я думаю про деньги в 21 год<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Деньги — не цель. Но без них — не свобода.»</span><br><br>
+        <b style="color:#fff">51.</b> Запуск наставничества — официально<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Открываю пять мест. Вот что ты получишь.»</span><br><br>
+        <b style="color:#fff">52.</b> Как выглядит мой рабочий стол и инструменты<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Показываю всё что использую для работы — без лишнего.»</span><br><br>
+        <b style="color:#fff">53.</b> Почему я выбрал веб-разработку а не другие ниши<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Дропшиппинг, крипта, смм — почему именно сайты.»</span><br><br>
+        <b style="color:#fff">54.</b> Честно про провальную неделю<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «На этой неделе всё пошло не так. Вот что случилось.»</span><br><br>
+        <b style="color:#fff">55.</b> Как я веду переговоры с клиентами<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Первый звонок с клиентом решает всё. Вот как я его веду.»</span><br><br>
+        <b style="color:#fff">56.</b> Варшава — топ-5 мест которые я открыл для себя<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Пять мест в Варшаве которые стали частью моей жизни.»</span><br><br>
+        <b style="color:#fff">57.</b> Что значит быть предпринимателем в 21 — честно<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Никто не говорит тебе что предпринимательство — это вот так.»</span><br><br>
+        <b style="color:#fff">58.</b> Мои первые ученики — как идут дела<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Три человека начали со мной. Вот их результаты за первые две недели.»</span><br><br>
+        <b style="color:#fff">59.</b> Почему я хочу создать одежный бренд<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Одежда — это не про моду. Это про идентичность.»</span><br><br>
+        <b style="color:#fff">60.</b> 90 дней — итог квартала<br>
+        <span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Девяносто дней назад у меня не было блога. Вот что изменилось.»</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ОКТЯБРЬ -->
+<div id="m4" class="content">
+  <div class="month-header">
+    <div>
+      <div class="month-title">Октябрь — <span>Агентство</span></div>
+      <div class="month-focus">Фокус: переход от фриланса к агентству, масштабирование, первые партнёрства. Начинаем говорить про одежду.</div>
+    </div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="month-stat-val">20</div><div class="month-stat-label">Видео</div></div>
+      <div class="month-stat"><div class="month-stat-val">10K</div><div class="month-stat-label">Цель TT</div></div>
+      <div class="month-stat"><div class="month-stat-val">3K</div><div class="month-stat-label">Цель IG</div></div>
+    </div>
+  </div>
+  <div class="week-label">Темы октября — 20 видео с хуками</div>
+  <div class="sc" id="sc_oct">
+    <div class="sc-head" onclick="toggle('sc_oct')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 61–80</div><div class="sc-title">Все 20 тем октября</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div style="color:var(--muted); font-size:13px; line-height:2.2">
+        <b style="color:#fff">61.</b> Я больше не фрилансер — я строю агентство<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Разница между фрилансером и агентством — не в размере. В мышлении.»</span><br><br>
+        <b style="color:#fff">62.</b> Как я нанял первого подрядчика<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я нанял человека. Вот как это изменило мой бизнес.»</span><br><br>
+        <b style="color:#fff">63.</b> Портфолио которое приносит клиентов — как сделать<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Большинство портфолио не работают. Вот почему.»</span><br><br>
+        <b style="color:#fff">64.</b> Мой первый корпоративный клиент<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Он заплатил в три раза больше обычного. Вот как это случилось.»</span><br><br>
+        <b style="color:#fff">65.</b> Как я планирую неделю — система<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Без планирования я зарабатывал в два раза меньше. Вот моя система.»</span><br><br>
+        <b style="color:#fff">66.</b> Осень в Варшаве — lifestyle влог<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Варшава осенью — это совсем другой город.»</span><br><br>
+        <b style="color:#fff">67.</b> Три типа клиентов с которыми я не работаю<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я отказываю клиентам. Вот каким и почему.»</span><br><br>
+        <b style="color:#fff">68.</b> Как я веду финансы бизнеса — просто<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Финансы не нужно усложнять. Вот моя система на три колонки.»</span><br><br>
+        <b style="color:#fff">69.</b> Почему я хочу создать одежный бренд — конкретно<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я думал об этом год. Вот почему одежда — следующий шаг.»</span><br><br>
+        <b style="color:#fff">70.</b> Что я читаю и смотрю — топ ресурсов<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Пять источников которые реально изменили мой подход к бизнесу.»</span><br><br>
+        <b style="color:#fff">71.</b> Мой первый год в Европе — честный разбор<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Год в Европе. Вот что я понял про деньги, людей и себя.»</span><br><br>
+        <b style="color:#fff">72.</b> Как выглядит идеальный сайт для малого бизнеса<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Большинство сайтов малого бизнеса теряют клиентов. Вот почему.»</span><br><br>
+        <b style="color:#fff">73.</b> Честно про провал — потерял крупного клиента<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я потерял контракт на три тысячи евро. Вот что я сделал не так.»</span><br><br>
+        <b style="color:#fff">74.</b> Как я нахожу время на блог когда много работы<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Batch recording — снимаю всё за один день. Вот как.»</span><br><br>
+        <b style="color:#fff">75.</b> Первый шаг к одежному бренду — исследование рынка<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я начал изучать рынок одежды. Вот что обнаружил.»</span><br><br>
+        <b style="color:#fff">76.</b> Бильярд — участвую в турнире<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я участвую в бильярдном турнире. Вот как готовлюсь.»</span><br><br>
+        <b style="color:#fff">77.</b> Как я справляюсь с выгоранием<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я выгорел. Вот что помогло.»</span><br><br>
+        <b style="color:#fff">78.</b> Что такое AI и как я использую его в работе<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «ИИ сэкономил мне 10 часов на прошлой неделе. Вот как.»</span><br><br>
+        <b style="color:#fff">79.</b> Мои цели на следующий квартал — публично<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Ставлю цели публично — так сложнее сдаться.»</span><br><br>
+        <b style="color:#fff">80.</b> Итоги четвёртого месяца — первые большие деньги<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Четыре месяца. Вот сколько заработал с блога и агентства.»</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ НОЯБРЬ -->
+<div id="m5" class="content">
+  <div class="month-header">
+    <div>
+      <div class="month-title">Ноябрь — <span>Бренд</span></div>
+      <div class="month-focus">Фокус: личный бренд выходит на новый уровень, первые разговоры про одежду с аудиторией, партнёрства, коллаборации.</div>
+    </div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="month-stat-val">20</div><div class="month-stat-label">Видео</div></div>
+      <div class="month-stat"><div class="month-stat-val">20K</div><div class="month-stat-label">Цель TT</div></div>
+      <div class="month-stat"><div class="month-stat-val">6K</div><div class="month-stat-label">Цель IG</div></div>
+    </div>
+  </div>
+  <div class="week-label">Темы ноября — 20 видео с хуками</div>
+  <div class="sc" id="sc_nov">
+    <div class="sc-head" onclick="toggle('sc_nov')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 81–100</div><div class="sc-title">Все 20 тем ноября</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div style="color:var(--muted); font-size:13px; line-height:2.2">
+        <b style="color:#fff">81.</b> Почему я хочу чтобы меня знали — про узнаваемость<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Узнаваемость — это не тщеславие. Это актив.»</span><br><br>
+        <b style="color:#fff">82.</b> Как изменилась моя жизнь за 5 месяцев блога<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Пять месяцев назад я снял первое видео. Вот что изменилось.»</span><br><br>
+        <b style="color:#fff">83.</b> Первая коллаборация с другим блогером<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Мы сделали видео вместе. Вот что из этого вышло.»</span><br><br>
+        <b style="color:#fff">84.</b> Что значит роскошь для меня в 21 год<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Роскошь — это не машина и не часы. Вот как я это понимаю.»</span><br><br>
+        <b style="color:#fff">85.</b> Как я выбираю с кем работать — мои критерии<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Не каждый клиент — хороший клиент. Вот мои критерии.»</span><br><br>
+        <b style="color:#fff">86.</b> Про мечту об Audi — честно<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «У меня нет машины. Но я знаю какая будет первой.»</span><br><br>
+        <b style="color:#fff">87.</b> Что такое дисциплина — моё определение<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Дисциплина — это не сила воли. Это система.»</span><br><br>
+        <b style="color:#fff">88.</b> Первые идеи для линейки одежды — показываю процесс<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я начал думать про свой бренд одежды. Вот первые идеи.»</span><br><br>
+        <b style="color:#fff">89.</b> Как я общаюсь с богатыми людьми — что заметил<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я знаю людей которые зарабатывают 50К+ в месяц. Вот что их объединяет.»</span><br><br>
+        <b style="color:#fff">90.</b> Моя история — с самого начала<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Многие пришли недавно. Расскажу всё с начала.»</span><br><br>
+        <b style="color:#fff">91.</b> Почему контент-маркетинг работает лучше рекламы<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Реклама — аренда внимания. Контент — его собственность.»</span><br><br>
+        <b style="color:#fff">92.</b> Как я провожу переговоры на английском<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Мой английский не идеальный. Клиенты всё равно платят.»</span><br><br>
+        <b style="color:#fff">93.</b> Зима в Варшаве — первые впечатления<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Варшава зимой — это совсем другой город.»</span><br><br>
+        <b style="color:#fff">94.</b> Три вещи которые я перестал делать и стал продуктивнее<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я убрал три вещи из жизни. Продуктивность выросла в два раза.»</span><br><br>
+        <b style="color:#fff">95.</b> Моя система создания контента — batch recording<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Снимаю 8 видео за один день. Вот как это выглядит.»</span><br><br>
+        <b style="color:#fff">96.</b> Что думает семья про мой путь<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Родители не понимали зачем я уехал. Теперь понимают.»</span><br><br>
+        <b style="color:#fff">97.</b> Первый шаг к запуску одежного бренда — юридика<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Хочешь запустить бренд одежды — вот с чего начать.»</span><br><br>
+        <b style="color:#fff">98.</b> Благодарность аудитории — milestone<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Вы изменили мою жизнь. Серьёзно.»</span><br><br>
+        <b style="color:#fff">99.</b> Мои планы на декабрь — публично<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Декабрь — финальный месяц года. Вот мой план.»</span><br><br>
+        <b style="color:#fff">100.</b> 100-е видео — итоги пяти месяцев<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Сотое видео. Вот всё что изменилось за пять месяцев.»</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ДЕКАБРЬ -->
+<div id="m6" class="content">
+  <div class="month-header">
+    <div>
+      <div class="month-title">Декабрь — <span>Итог года</span></div>
+      <div class="month-focus">Фокус: подведение итогов, анонс одежного бренда, цели на следующий год, максимальная виральность на новогоднем контенте.</div>
+    </div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="month-stat-val">20</div><div class="month-stat-label">Видео</div></div>
+      <div class="month-stat"><div class="month-stat-val">40K</div><div class="month-stat-label">Цель TT</div></div>
+      <div class="month-stat"><div class="month-stat-val">12K</div><div class="month-stat-label">Цель IG</div></div>
+    </div>
+  </div>
+  <div class="week-label">Темы декабря — 20 видео с хуками</div>
+  <div class="sc" id="sc_dec">
+    <div class="sc-head" onclick="toggle('sc_dec')">
+      <div class="sc-left"><div class="sc-num">ВИДЕО 101–120</div><div class="sc-title">Все 20 тем декабря</div></div>
+      <div class="sc-right"><span class="badge b-both">TT + IG</span><div class="sc-arrow">▼</div></div>
+    </div>
+    <div class="sc-body">
+      <div style="color:var(--muted); font-size:13px; line-height:2.2">
+        <b style="color:#fff">101.</b> Декабрь — самый важный месяц года для бизнеса<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Пока все отдыхают в декабре — умные работают. Вот почему.»</span><br><br>
+        <b style="color:#fff">102.</b> Итоги 2025 года — честно и с цифрами<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Год назад у меня не было ничего. Вот где я сейчас.»</span><br><br>
+        <b style="color:#fff">103.</b> Что я купил на первые большие деньги<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Первая крупная покупка на деньги которые я заработал сам.»</span><br><br>
+        <b style="color:#fff">104.</b> Как выглядит моя квартира в Варшаве — тур<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Покажу квартиру. Честно — без фильтров.»</span><br><br>
+        <b style="color:#fff">105.</b> Три самых важных решения этого года<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Три решения которые изменили мой 2025 год.»</span><br><br>
+        <b style="color:#fff">106.</b> Анонс: запускаю линейку одежды<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я делаю это. Первая коллекция. Дата выхода — скоро.»</span><br><br>
+        <b style="color:#fff">107.</b> Концепция одежного бренда — показываю идеи<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Вот что я вижу когда думаю о своей одежде. Эстетика, смысл, ценности.»</span><br><br>
+        <b style="color:#fff">108.</b> Новый год в Варшаве — влог<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Встречаю новый год в Варшаве. Первый раз не дома.»</span><br><br>
+        <b style="color:#fff">109.</b> Что я понял про деньги за этот год<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Деньги — не всё. Но вот что я понял про них за год.»</span><br><br>
+        <b style="color:#fff">110.</b> Мои цели на 2026 год — публично<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Ставлю цели на следующий год. Публично. Без права на отмазку.»</span><br><br>
+        <b style="color:#fff">111.</b> Письмо себе в начало года<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Дорогой Любомир из января. Вот что тебя ждёт.»</span><br><br>
+        <b style="color:#fff">112.</b> Топ 5 ошибок года которые сделали меня сильнее<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Мои пять главных ошибок за год. И почему я за них благодарен.»</span><br><br>
+        <b style="color:#fff">113.</b> Как изменилось мышление за 6 месяцев блога<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Блог изменил меня. Не аудитория — я сам.»</span><br><br>
+        <b style="color:#fff">114.</b> Про Украину — как я думаю о доме<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Я украинец. Живу в Польше. Вот как я думаю о доме.»</span><br><br>
+        <b style="color:#fff">115.</b> Первый дроп одежды — детали<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Первый дроп. Лимитированный. Вот детали.»</span><br><br>
+        <b style="color:#fff">116.</b> Рождество в Варшаве — атмосферный влог<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Рождество в Варшаве — это магия. Показываю.»</span><br><br>
+        <b style="color:#fff">117.</b> Что будет в блоге в 2026 году<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Следующий год будет другим. Вот что изменится.»</span><br><br>
+        <b style="color:#fff">118.</b> Благодарность — итог года<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Год назад вас не было. Сейчас вы есть. Спасибо.»</span><br><br>
+        <b style="color:#fff">119.</b> Последнее видео года — монолог<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Последнее видео в этом году. Говорю то что думаю.»</span><br><br>
+        <b style="color:#fff">120.</b> С новым годом — первое видео 2026<br><span style="color:var(--gold); font-size:11px; font-style:italic">Хук: «Первое видео нового года. Новая глава начинается.»</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>

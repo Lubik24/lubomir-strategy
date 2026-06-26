@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сценарии + Аккаунты — Lubomir</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dim: #8B6914;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --card: #161616;
+    --border: #222222;
+    --text: #E0E0E0;
+    --muted: #888888;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --blue: #3498db;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a1400 100%);
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 36px 24px 28px;
+    text-align: center;
+  }
+
+  .header-label { font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .header h1 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; color: #fff; line-height: 1.2; }
+  .header h1 span { color: var(--gold); }
+  .header-sub { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 13px 18px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .tab:hover { color: var(--gold-light); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .content { display: none; padding: 24px 20px; max-width: 820px; margin: 0 auto; }
+  .content.active { display: block; }
+
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .highlight {
+    background: linear-gradient(135deg, #1a1400, #111);
+    border: 1px solid var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .highlight strong { color: var(--gold); }
+
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); margin: 20px 0; }
+
+  /* SCRIPT CARD */
+  .script-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .script-header {
+    background: linear-gradient(135deg, #1a1400, #161200);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .script-num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 2px;
+  }
+
+  .script-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    color: #fff;
+    margin: 4px 0 8px;
+  }
+
+  .script-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge-tt { background: #2a0808; color: #ff6b6b; border: 1px solid #4a1010; }
+  .badge-ig { background: #1f0a2a; color: #c44dff; border: 1px solid #3a1a4a; }
+  .badge-both { background: #1a1400; color: var(--gold); border: 1px solid var(--gold-dim); }
+  .badge-dur { background: #0a1a0a; color: var(--green); border: 1px solid #1a3a1a; }
+
+  .script-body { padding: 18px; }
+
+  /* SHOT ROW */
+  .shot {
+    display: flex;
+    gap: 0;
+    margin-bottom: 3px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .shot-time {
+    background: #1a1a1a;
+    color: var(--gold);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 10px 10px;
+    min-width: 54px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .shot-frame {
+    background: #111;
+    color: var(--muted);
+    font-size: 11px;
+    padding: 10px 12px;
+    min-width: 130px;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .shot-text {
+    background: #0d0d0d;
+    color: var(--text);
+    font-size: 12px;
+    padding: 10px 12px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .shot-label {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .label-col {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .label-time { min-width: 54px; text-align: center; }
+  .label-frame { min-width: 130px; }
+  .label-words { flex: 1; }
+
+  .script-notes {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .note-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .note-key {
+    color: var(--gold);
+    font-weight: 600;
+    min-width: 80px;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+
+  .note-val { color: var(--muted); }
+
+  /* ACCOUNT GUIDE */
+  .step-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .step-num {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--gold);
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 10px;
+    border-radius: 10px;
+    letter-spacing: 1px;
+  }
+
+  .step-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    margin-top: 4px;
+  }
+
+  .step-list { list-style: none; }
+  .step-list li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 1px solid #1a1a1a;
+    display: flex;
+    gap: 8px;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+  .warning {
+    background: #1a0a0a;
+    border: 1px solid #3a1a1a;
+    border-left: 3px solid var(--red);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #cc8888;
+  }
+  .warning strong { color: var(--red); }
+
+  .success-box {
+    background: #0a1a0a;
+    border: 1px solid #1a3a1a;
+    border-left: 3px solid var(--green);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #88cc88;
+  }
+  .success-box strong { color: var(--green); }
+
+  /* MONTH FILTER */
+  .month-filters { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .month-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.2s;
+  }
+  .month-btn:hover, .month-btn.active { border-color: var(--gold); color: var(--gold); background: #1a1400; }
+  .month-section { display: none; }
+  .month-section.active { display: block; }
+
+  .platform-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .platform-btn {
+    padding: 7px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.2s;
+  }
+  .platform-btn.tt.active { border-color: #ff6b6b; color: #ff6b6b; background: #1a0808; }
+  .platform-btn.ig.active { border-color: #c44dff; color: #c44dff; background: #1a0a2a; }
+
+  .platform-section { display: none; }
+  .platform-section.active { display: block; }
+
+  @media (max-width: 600px) {
+    .shot-frame { display: none; }
+    .label-frame { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Детальные сценарии + Запуск аккаунтов</div>
+  <h1>LUBOMIR<br><span>FULL SCRIPT GUIDE</span></h1>
+  <div class="header-sub">Текст слово в слово · Постановка кадров · Тайминг · Создание аккаунтов с нуля</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('scripts')">📹 Сценарии</div>
+  <div class="tab" onclick="showTab('accounts')">📱 Аккаунты</div>
+  <div class="tab" onclick="showTab('capcut')">✂️ Монтаж</div>
+</div>
+
+<!-- ═══════════════ СЦЕНАРИИ -->
+<div id="scripts" class="content active">
+
+  <div class="highlight">
+    Каждый сценарий расписан по секундам: что в кадре, что говоришь, сколько длится. Снимай вертикально 9:16. Все ролики 30–60 секунд — оптимально для TikTok и Reels.
+  </div>
+
+  <div class="month-filters">
+    <button class="month-btn active" onclick="showMonth('m1')">Июль — Месяц 1</button>
+    <button class="month-btn" onclick="showMonth('m2')">Август — Месяц 2</button>
+    <button class="month-btn" onclick="showMonth('m3')">Сентябрь — Месяц 3</button>
+  </div>
+
+  <!-- ═══ ИЮЛЬ -->
+  <div id="m1" class="month-section active">
+
+    <!-- ВИДЕО 1 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 01 · НЕДЕЛЯ 1</div>
+          <div class="script-title">Кто я и почему начинаю этот блог</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 45 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст / закадровый голос</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–2с</div>
+          <div class="shot-frame">Крупный план лица, смотришь в камеру</div>
+          <div class="shot-text">«Мне 21 год. Я строю бизнес в Европе с нуля.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">2–6с</div>
+          <div class="shot-frame">Улица Мюнхена, идёшь или стоишь</div>
+          <div class="shot-text">«Живу в Мюнхене, сам, без связей, без стартового капитала.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">6–12с</div>
+          <div class="shot-frame">Снова лицо, крупно, уверенный взгляд</div>
+          <div class="shot-text">«Я делаю сайты для бизнеса. Зарабатываю на этом. И начинаю строить личный бренд — публично.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">12–20с</div>
+          <div class="shot-frame">Ноутбук в кадре или экран с проектом</div>
+          <div class="shot-text">«Буду показывать всё — клиентов, деньги, ошибки, рост. Без фильтров.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">20–30с</div>
+          <div class="shot-frame">Снова на улице, атмосфера города</div>
+          <div class="shot-text">«Я не знаю немецкого. Я не знаю куда приду через год. Но я иду — и покажу каждый шаг.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">30–45с</div>
+          <div class="shot-frame">Прямо в камеру, близко</div>
+          <div class="shot-text">«Если тебе 18–25 и ты хочешь строить что-то своё в Европе — подписывайся. Это будет честно.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Музыка</div><div class="note-val">Тихая атмосферная — в CapCut ищи "cinematic motivation" или "ambient focus"</div></div>
+          <div class="note-row"><div class="note-key">Субтитры</div><div class="note-val">Авто-субтитры в CapCut. Ключевые слова выдели золотым или белым жирным</div></div>
+          <div class="note-row"><div class="note-key">Темп</div><div class="note-val">Говори медленнее чем обычно. Паузы между фразами — это монтажные точки</div></div>
+          <div class="note-row"><div class="note-key">CTA</div><div class="note-val">Подписывайся — покажу весь путь честно</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВИДЕО 2 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 02 · НЕДЕЛЯ 1</div>
+          <div class="script-title">Почему богатые не рассказывают как стали богатыми</div>
+          <div class="script-badges">
+            <span class="badge badge-tt">TikTok</span>
+            <span class="badge badge-dur">⏱ 40 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Лицо крупно, серьёзный взгляд</div>
+          <div class="shot-text">«Я знаю трёх парней моего возраста. Они зарабатывают десять тысяч евро в месяц.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–7с</div>
+          <div class="shot-frame">Пауза, смотришь в камеру</div>
+          <div class="shot-text">«Ни один не объяснил мне как. Я долго думал — почему.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">7–18с</div>
+          <div class="shot-frame">Идёшь или стоишь, жестикулируешь</div>
+          <div class="shot-text">«А потом понял. Они не скрывают специально. Просто то что они делают — невозможно объяснить в одном видео. Они построили активы. Пока они спят — деньги приходят. Это не формула. Это система которую строят годами.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">18–30с</div>
+          <div class="shot-frame">Снова лицо, ближе к камере</div>
+          <div class="shot-text">«Я сейчас на этапе где моё время равно моим деньгам. Это фриланс. Это не плохо — это старт. Но цель — построить то что работает без меня.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">30–40с</div>
+          <div class="shot-frame">В камеру, прямо</div>
+          <div class="shot-text">«Буду строить это публично. Подписывайся — посмотрим вместе получится или нет.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Хук</div><div class="note-val">Первые 3 секунды — самое важное. Говори быстро и уверенно</div></div>
+          <div class="note-row"><div class="note-key">Музыка</div><div class="note-val">Чуть более энергичная чем видео 1. "dark trap beat" в CapCut</div></div>
+          <div class="note-row"><div class="note-key">CTA</div><div class="note-val">«Сохрани если тоже думал об этом»</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВИДЕО 3 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 03 · НЕДЕЛЯ 1</div>
+          <div class="script-title">Мой день как фрилансер в Мюнхене</div>
+          <div class="script-badges">
+            <span class="badge badge-ig">IG Reels</span>
+            <span class="badge badge-dur">⏱ 30 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Закадровый голос</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Ноутбук на столе, утро, кофе рядом</div>
+          <div class="shot-text">«День из жизни фрилансера в Мюнхене. 21 год.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–8с</div>
+          <div class="shot-frame">Экран ноутбука с сайтом/кодом</div>
+          <div class="shot-text">«Утром — работа над проектом клиента. Без офиса, без начальника.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">8–15с</div>
+          <div class="shot-frame">Улица Мюнхена, красивая архитектура</div>
+          <div class="shot-text">«Днём выхожу подышать. Мюнхен — это другой уровень. Красиво везде.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">15–22с</div>
+          <div class="shot-frame">Кафе, ты за столиком с ноутом или телефоном</div>
+          <div class="shot-text">«Иногда работаю в кафе. Атмосфера другая — продуктивность выше.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">22–30с</div>
+          <div class="shot-frame">Снова ты в кадре, закат или вечер</div>
+          <div class="shot-text">«Это моя жизнь сейчас. Строю её сам. Подписывайся — покажу как.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Формат</div><div class="note-val">Lifestyle b-roll. Не нужно говорить в камеру — снимай окружение и пиши закадровый голос в CapCut</div></div>
+          <div class="note-row"><div class="note-key">Музыка</div><div class="note-val">Лёгкая, атмосферная. "aesthetic vlog" в CapCut</div></div>
+          <div class="note-row"><div class="note-key">Совет</div><div class="note-val">Снимай с рук, без штатива — это живее и натуральнее</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВИДЕО 4 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 04 · НЕДЕЛЯ 2</div>
+          <div class="script-title">Как я нашёл первого клиента не зная немецкого</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 50 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Лицо крупно, прямо в камеру</div>
+          <div class="shot-text">«Я не говорю по-немецки. Мой первый клиент заплатил мне полторы тысячи евро.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–10с</div>
+          <div class="shot-frame">Телефон в руках, скролл переписки</div>
+          <div class="shot-text">«Я написал холодное сообщение в директ. На русском. Клиентка оказалась русскоязычной.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">10–22с</div>
+          <div class="shot-frame">Идёшь, жестикулируешь</div>
+          <div class="shot-text">«Вот что я понял: язык — не барьер. Барьер — это когда ты не пишешь вообще. Я написал двадцать людям. Ответил один. Это и есть первый клиент.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">22–35с</div>
+          <div class="shot-frame">Экран с готовым сайтом</div>
+          <div class="shot-text">«Я сделал сайт. Получил оплату. Теперь это моё портфолио.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">35–50с</div>
+          <div class="shot-frame">В камеру, уверенно</div>
+          <div class="shot-text">«Если ты думаешь что у тебя недостаточно знаний — ты уже знаешь достаточно чтобы начать. Просто начни писать.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">CTA</div><div class="note-val">«Если нужен сайт для бизнеса — пиши в директ»</div></div>
+          <div class="note-row"><div class="note-key">Ключевое</div><div class="note-val">Начало видео — РЕЗУЛЬТАТ сразу. Не рассказывай предысторию — дай результат в первые 3 секунды</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВИДЕО 5 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 05 · НЕДЕЛЯ 2</div>
+          <div class="script-title">Одиночество когда строишь бизнес</div>
+          <div class="script-badges">
+            <span class="badge badge-tt">TikTok</span>
+            <span class="badge badge-dur">⏱ 45 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–4с</div>
+          <div class="shot-frame">Ты идёшь один по улице, снято сзади или сбоку</div>
+          <div class="shot-text">«Я гуляю один каждый день. Буквально — некому позвонить.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">4–12с</div>
+          <div class="shot-frame">Лицо, честный взгляд, не пафосно</div>
+          <div class="shot-text">«Родители заняты. Друзья далеко. Здесь в Мюнхене — я один. И это реально тяжело.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">12–25с</div>
+          <div class="shot-frame">Идёшь дальше, город вокруг</div>
+          <div class="shot-text">«Но я заметил кое-что. Именно в этом одиночестве я думаю яснее. Я не отвлекаюсь. Я строю. Может это и есть цена за то что будет потом.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">25–35с</div>
+          <div class="shot-frame">Останавливаешься, смотришь в камеру</div>
+          <div class="shot-text">«Я превратил одиночество в топливо. Есть люди которые вернутся когда всё получится. Я помню кто был рядом когда ничего не было.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">35–45с</div>
+          <div class="shot-frame">Продолжаешь идти, не смотришь в камеру</div>
+          <div class="shot-text">«Если ты тоже строишь что-то один — ты не один в этом. Подписывайся.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Тон</div><div class="note-val">Честный, тихий, не мотивационный спич. Говори как другу, без пафоса</div></div>
+          <div class="note-row"><div class="note-key">Музыка</div><div class="note-val">Тихая, меланхоличная. "lofi sad" или "emotional piano" в CapCut</div></div>
+          <div class="note-row"><div class="note-key">Эффект</div><div class="note-val">Это видео даст максимальные комментарии. Люди узнают себя.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВИДЕО 6 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 06 · НЕДЕЛЯ 3</div>
+          <div class="script-title">Показываю сайт который сделал клиенту</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 35 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Лицо в камеру</div>
+          <div class="shot-text">«Месяц работы. Вот что получилось.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–20с</div>
+          <div class="shot-frame">Screen record сайта — прокручиваешь страницы</div>
+          <div class="shot-text">«Это сайт для бренда премиальных волос. Мюнхен и Цюрих. Дизайн, каталог, оформление, немецкий язык — всё с нуля.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">20–28с</div>
+          <div class="shot-frame">Снова ты в кадре</div>
+          <div class="shot-text">«Клиентка довольна. Я доволен. Портфолио растёт.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">28–35с</div>
+          <div class="shot-frame">В камеру прямо</div>
+          <div class="shot-text">«Нужен сайт для своего бизнеса — пиши в директ. Сделаю так же.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Важно</div><div class="note-val">Screen record делай на iPhone: Пункт управления → Запись экрана. Потом вставь в CapCut как клип</div></div>
+          <div class="note-row"><div class="note-key">CTA</div><div class="note-val">Прямой — нужен сайт, пиши в директ</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВИДЕО 7 -->
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 07 · НЕДЕЛЯ 4</div>
+          <div class="script-title">Переезжаю в Варшаву — почему</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 50 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Лицо, прямо в камеру</div>
+          <div class="shot-text">«Я живу в Мюнхене. И я уезжаю.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–15с</div>
+          <div class="shot-frame">Улица Мюнхена, красиво</div>
+          <div class="shot-text">«Мюнхен — шикарный город. Дорогой, красивый, стабильный. Но не для меня сейчас.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">15–30с</div>
+          <div class="shot-frame">Ты в кадре, объясняешь</div>
+          <div class="shot-text">«Варшава — это энергия. Там русскоязычное сообщество, предприниматели, движение. Я хочу окружение которое тянет вверх. В Мюнхене я один. В Варшаве — у меня уже есть люди.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">30–42с</div>
+          <div class="shot-frame">Идёшь, задумчиво</div>
+          <div class="shot-text">«Это не побег. Это шаг вперёд. Новый город — новая глава.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">42–50с</div>
+          <div class="shot-frame">В камеру, улыбка</div>
+          <div class="shot-text">«Покажу весь переезд. Подписывайся чтобы не пропустить.»</div>
+        </div>
+
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Эффект</div><div class="note-val">Создаёт сюжет и интригу. Аудитория будет ждать следующих видео из Варшавы</div></div>
+          <div class="note-row"><div class="note-key">Совет</div><div class="note-val">Сними это до переезда — пока ещё в Мюнхене. Это добавляет драму</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ АВГУСТ -->
+  <div id="m2" class="month-section">
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 08 · НЕДЕЛЯ 5</div>
+          <div class="script-title">Итоги первого месяца блога</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 50 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Лицо, прямо</div>
+          <div class="shot-text">«Месяц блога. Вот честные цифры.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–15с</div>
+          <div class="shot-frame">Экран телефона со статистикой TikTok/IG</div>
+          <div class="shot-text">«[назови реальные цифры] подписчиков. [X] просмотров. [Y] видео.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">15–30с</div>
+          <div class="shot-frame">Ты в кадре, объясняешь</div>
+          <div class="shot-text">«Что сработало: честные видео про одиночество и мышление. Что не зашло: слишком длинные форматы. Буду делать короче.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">30–42с</div>
+          <div class="shot-frame">Прямо в камеру</div>
+          <div class="shot-text">«Пришёл один запрос на сайт через блог. Это уже результат. Продолжаю.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">42–50с</div>
+          <div class="shot-frame">Улыбка, финал</div>
+          <div class="shot-text">«Через месяц покажу следующие цифры. Посмотрим как растёт.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Важно</div><div class="note-val">Вставь реальные цифры — даже если они маленькие. Честность строит доверие сильнее больших чисел</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 09 · НЕДЕЛЯ 6</div>
+          <div class="script-title">Окружение которое тебя убивает</div>
+          <div class="script-badges">
+            <span class="badge badge-tt">TikTok</span>
+            <span class="badge badge-dur">⏱ 45 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Лицо, серьёзно</div>
+          <div class="shot-text">«Самые токсичные люди в твоей жизни — не враги. Это близкие.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–18с</div>
+          <div class="shot-frame">Идёшь, говоришь</div>
+          <div class="shot-text">«Те кто говорит "зачем тебе это", "не получится", "лучше иди работать нормально" — они не желают плохого. Они просто боятся за тебя. Но их страх становится твоим потолком если ты слушаешь.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">18–32с</div>
+          <div class="shot-frame">Останавливаешься</div>
+          <div class="shot-text">«Я переехал один в другую страну. Это лучшее что я сделал. Не потому что семья плохая. А потому что в тишине я слышу себя.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">32–45с</div>
+          <div class="shot-frame">В камеру</div>
+          <div class="shot-text">«Выбирай окружение осознанно. Это не эгоизм. Это инвестиция в себя.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Тон</div><div class="note-val">Спокойный, рассудительный. Не злой и не обиженный — мудрый</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 10 · НЕДЕЛЯ 7</div>
+          <div class="script-title">Бильярд научил меня бизнесу</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 55 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–4с</div>
+          <div class="shot-frame">Ты за бильярдным столом, бьёшь шар</div>
+          <div class="shot-text">«Я профессиональный бильярдист. И бильярд научил меня зарабатывать деньги.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">4–18с</div>
+          <div class="shot-frame">Стол крупно, потом ты</div>
+          <div class="shot-text">«Урок первый. В бильярде ты думаешь на три хода вперёд. В бизнесе то же самое. Не реагируй на сегодня — думай что будет через месяц.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">18–35с</div>
+          <div class="shot-frame">Снова удар, потом разговор</div>
+          <div class="shot-text">«Урок второй. Один плохой удар не проигрыш. Плохая серия — проигрыш. В бизнесе один плохой месяц — нормально. Сдаться после него — ошибка.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">35–50с</div>
+          <div class="shot-frame">В камеру стоя у стола</div>
+          <div class="shot-text">«Урок третий. Техника решает больше чем сила. В бизнесе стратегия решает больше чем усилия. Работай умнее.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">50–55с</div>
+          <div class="shot-frame">Финальный удар или просто в камеру</div>
+          <div class="shot-text">«Подписывайся — таких видео больше не у кого нет.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Уникальность</div><div class="note-val">Это твоё самое уникальное видео. Бильярд + бизнес — такого нет ни у кого в нише</div></div>
+          <div class="note-row"><div class="note-key">Локация</div><div class="note-val">Снимай в бильярдном клубе. Попроси кого-то поснимать тебя или поставь телефон на штатив</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 11 · НЕДЕЛЯ 8</div>
+          <div class="script-title">Первая монетизация блога — беру 3 человека на разбор</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 40 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Прямо в камеру</div>
+          <div class="shot-text">«Впервые монетизирую блог. Вот что делаю.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–18с</div>
+          <div class="shot-frame">Объясняешь, жестикулируешь</div>
+          <div class="shot-text">«Беру трёх человек на личный разбор. Час в Zoom. Разберём твой проект, твои продажи, твой оффер. Я покажу что я делаю и что конкретно изменить тебе.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">18–30с</div>
+          <div class="shot-frame">Немного ближе к камере</div>
+          <div class="shot-text">«Цена — сто пятьдесят евро. Мест три. Когда закроются — закроются.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">30–40с</div>
+          <div class="shot-frame">Прямо, финал</div>
+          <div class="shot-text">«Если интересно — пиши в директ слово РАЗБОР. Отвечу сегодня.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Тон</div><div class="note-val">Уверенный, не продающий. Как будто делаешь одолжение — не умоляешь купить</div></div>
+          <div class="note-row"><div class="note-key">Дефицит</div><div class="note-val">«Мест три» — реальный дефицит. Не обманывай, реально возьми только трёх</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ СЕНТЯБРЬ -->
+  <div id="m3" class="month-section">
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 12 · НЕДЕЛЯ 9</div>
+          <div class="script-title">Жизнь в Варшаве — первый месяц честно</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 55 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–3с</div>
+          <div class="shot-frame">Улица Варшавы, красивый кадр</div>
+          <div class="shot-text">«Я переехал в Варшаву. Вот что никто не говорит про этот город.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">3–18с</div>
+          <div class="shot-frame">Прогулка по Варшаве, разные локации</div>
+          <div class="shot-text">«Цены в два раза ниже Мюнхена. Люди энергичнее. Русскоязычное сообщество огромное — я за месяц познакомился с предпринимателями которых в Мюнхене не встречал за год.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">18–35с</div>
+          <div class="shot-frame">Ты в кафе или на улице</div>
+          <div class="shot-text">«Минусы: бюрократия, польский язык сложнее немецкого, банки открыть непросто. Но это решаемо.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">35–50с</div>
+          <div class="shot-frame">В камеру, итог</div>
+          <div class="shot-text">«Если ты думаешь о переезде в Польшу — это лучший момент. Рынок растёт, предпринимателей много, конкуренции меньше.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">50–55с</div>
+          <div class="shot-frame">Финал</div>
+          <div class="shot-text">«Подписывайся — расскажу больше про жизнь здесь.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Формат</div><div class="note-val">Влог-стиль. Много b-roll города. Это самый просматриваемый тип контента у эмигрантов</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 13 · НЕДЕЛЯ 11</div>
+          <div class="script-title">Запуск наставничества — официально</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 50 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–4с</div>
+          <div class="shot-frame">Прямо в камеру, уверенно</div>
+          <div class="shot-text">«Открываю пять мест. Вот что ты получишь.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">4–22с</div>
+          <div class="shot-frame">Объясняешь, чётко</div>
+          <div class="shot-text">«Четыре недели вместе. Покажу как найти первых клиентов на сайты. Как выставлять цену. Как не работать за бесплатно. Как выйти на первую тысячу евро в месяц. Всё что я сам прошёл — передам тебе.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">22–36с</div>
+          <div class="shot-frame">Немного ближе</div>
+          <div class="shot-text">«Цена — двести пятьдесят евро за месяц. Мест пять. Старт в следующий понедельник.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">36–50с</div>
+          <div class="shot-frame">Финал, прямо</div>
+          <div class="shot-text">«Если хочешь — пиши в директ слово СТАРТ. Отвечу лично каждому.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Ключевое</div><div class="note-val">К этому моменту у тебя уже есть аудитория которая тебя знает 2 месяца. Они готовы покупать.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-header">
+        <div>
+          <div class="script-num">ВИДЕО 14 · НЕДЕЛЯ 12</div>
+          <div class="script-title">90 дней — итог квартала</div>
+          <div class="script-badges">
+            <span class="badge badge-both">TikTok + IG</span>
+            <span class="badge badge-dur">⏱ 60 сек</span>
+          </div>
+        </div>
+      </div>
+      <div class="script-body">
+        <div class="shot-label">
+          <div class="label-col label-time">Время</div>
+          <div class="label-col label-frame">Кадр</div>
+          <div class="label-col label-words">Текст</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">0–4с</div>
+          <div class="shot-frame">Лицо, прямо</div>
+          <div class="shot-text">«Девяносто дней назад у меня не было блога. Вот что изменилось.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">4–20с</div>
+          <div class="shot-frame">Нарезка лучших моментов из прошлых видео</div>
+          <div class="shot-text">«[без слов — музыка и субтитры с цифрами: подписчики, видео, доход]»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">20–40с</div>
+          <div class="shot-frame">Ты сейчас, в Варшаве</div>
+          <div class="shot-text">«Переехал. Нашёл своих людей. Начал зарабатывать с блога. Не всё шло по плану — но я иду.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">40–55с</div>
+          <div class="shot-frame">В камеру, финальный монолог</div>
+          <div class="shot-text">«Следующий квартал — больше клиентов, больше контента, первые шаги к бренду. Если ты здесь с самого начала — спасибо. Продолжаем.»</div>
+        </div>
+        <div class="shot">
+          <div class="shot-time">55–60с</div>
+          <div class="shot-frame">Финал</div>
+          <div class="shot-text">«Подписывайся если ещё не. Лучшее — впереди.»</div>
+        </div>
+        <div class="script-notes">
+          <div class="note-row"><div class="note-key">Монтаж</div><div class="note-val">Это твоё самое монтажное видео. Потрать на него больше времени — это мощный итоговый контент</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ АККАУНТЫ -->
+<div id="accounts" class="content">
+
+  <div class="highlight">
+    Ты прав насчёт теневого бана. Много аккаунтов с одного устройства и одного IP — алгоритм помечает как спам. Вот как создать чистые аккаунты которые не попадут в тень с первого дня.
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ Не делай это:</strong> не создавай новый аккаунт пока старый открыт. Не используй одну почту. Не копируй ник из старого аккаунта.
+  </div>
+
+  <div class="section-title">Подготовка iPhone — сделай это до создания аккаунтов</div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 1</div>
+    <div class="step-title">Сбрось рекламный идентификатор</div>
+    <ul class="step-list">
+      <li>Открой Настройки → Конфиденциальность и безопасность</li>
+      <li>Tracking → отключи «Разрешить запросы на отслеживание»</li>
+      <li>Apple Advertising → нажми «Сбросить идентификатор»</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 2</div>
+    <div class="step-title">Смени IP адрес</div>
+    <ul class="step-list">
+      <li>Скачай любой бесплатный VPN: ProtonVPN или Windscribe</li>
+      <li>Подключись к серверу в Германии или Польше</li>
+      <li>Создавай аккаунты только с включённым VPN</li>
+      <li>После создания VPN можно отключить — главное на этапе регистрации</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 3</div>
+    <div class="step-title">Подготовь новую почту</div>
+    <ul class="step-list">
+      <li>Создай новый Gmail специально для блога — например lubomir.brand@gmail.com</li>
+      <li>Не используй почту которая уже привязана к старым аккаунтам</li>
+      <li>Можно использовать Apple Sign In — это чистейший вариант</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">Создание TikTok аккаунта с нуля</div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 4</div>
+    <div class="step-title">Удали старое приложение TikTok</div>
+    <ul class="step-list">
+      <li>Зажми иконку TikTok → Удалить приложение</li>
+      <li>Подожди 2–3 минуты</li>
+      <li>Снова скачай TikTok из App Store</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 5</div>
+    <div class="step-title">Регистрация</div>
+    <ul class="step-list">
+      <li>Открой TikTok — НЕ входи в старый аккаунт</li>
+      <li>Нажми «Профиль» → «Регистрация»</li>
+      <li>Выбери «Использовать email или телефон»</li>
+      <li>Введи новую почту которую создал на шаге 3</li>
+      <li>Придумай ник: lubomirofficial / lubomirvibes / lubomir.eu — что-то чистое</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 6</div>
+    <div class="step-title">Настройка профиля TikTok</div>
+    <ul class="step-list">
+      <li>Фото: живое фото твоего лица, чёткое, хорошее освещение</li>
+      <li>Имя: Lubomir (или Любомир) — реальное имя строит доверие</li>
+      <li>Bio: «21. Веб-агентство в Европе. Строю бизнес и личный бренд — публично 🔥»</li>
+      <li>Первые 2–3 дня — только смотри видео, лайкай, не публикуй ничего</li>
+    </ul>
+  </div>
+
+  <div class="success-box">
+    <strong>✓ Почему 2–3 дня без постинга:</strong> TikTok анализирует новые аккаунты. Если ты сразу постишь — он думает что это бот. Если ты сначала ведёшь себя как обычный пользователь — алгоритм доверяет больше.
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">Создание Instagram аккаунта с нуля</div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 7</div>
+    <div class="step-title">Удали и переустанови Instagram</div>
+    <ul class="step-list">
+      <li>Зажми иконку Instagram → Удалить</li>
+      <li>Подожди 5 минут</li>
+      <li>Скачай заново из App Store</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 8</div>
+    <div class="step-title">Регистрация Instagram</div>
+    <ul class="step-list">
+      <li>Нажми «Создать новый аккаунт»</li>
+      <li>Введи ту же новую почту что и для TikTok</li>
+      <li>Ник: lubomir.eu / lubomirofficial / lubomir_brand</li>
+      <li>НЕ синхронизируй контакты при регистрации — нажми «Пропустить»</li>
+      <li>НЕ подключай Facebook если там старые аккаунты</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 9</div>
+    <div class="step-title">Настройка профиля Instagram</div>
+    <ul class="step-list">
+      <li>Переключи на профессиональный аккаунт: Настройки → Аккаунт → Переключиться на профессиональный → Автор контента</li>
+      <li>Фото: то же что и в TikTok — единый образ</li>
+      <li>Имя: Lubomir | Web & Brand</li>
+      <li>Bio: «🌍 Мюнхен → Варшава | Веб-агентство | Строю бизнес и личный бренд»</li>
+      <li>Добавь ссылку: Telegram или WhatsApp для связи</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 10</div>
+    <div class="step-title">Первые 48 часов в Instagram</div>
+    <ul class="step-list">
+      <li>Первые 2 дня: только смотри Stories и Reels, лайкай</li>
+      <li>Подпишись на 10–20 аккаунтов в своей нише</li>
+      <li>Первый пост: фото или Reel — НЕ сразу видео с рекламой услуг</li>
+      <li>Первое Reel должно набрать хотя бы 100 просмотров перед вторым</li>
+    </ul>
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ Что убивает охваты в первые недели:</strong> массфолловинг, одинаковые хештеги в каждом посте, удаление и перезалив видео, публикация чаще чем раз в 4 часа.
+  </div>
+
+  <div class="success-box">
+    <strong>✓ Что помогает охватам:</strong> первый коммент под своим видео (пиши что-то через 10 минут после публикации), отвечай на все комментарии в первый час, публикуй в пиковое время (19:00–21:00 по CET).
+  </div>
+
+</div>
+
+<!-- ═══════════════ МОНТАЖ -->
+<div id="capcut" class="content">
+
+  <div class="highlight">
+    CapCut — всё что тебе нужно. Бесплатно. Есть на iPhone. Именно на нём сделаны 90% вирусных видео в TikTok и Reels.
+  </div>
+
+  <div class="section-title">Установка и базовая настройка</div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 1</div>
+    <div class="step-title">Скачай CapCut</div>
+    <ul class="step-list">
+      <li>App Store → CapCut — Video Editor</li>
+      <li>Войди через Apple ID или создай аккаунт</li>
+      <li>Разрешить доступ к фото и микрофону</li>
+    </ul>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">Монтаж видео — пошагово</div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 2</div>
+    <div class="step-title">Создать новый проект</div>
+    <ul class="step-list">
+      <li>Нажми «+» → выбери все клипы которые снял</li>
+      <li>Формат: 9:16 (вертикальный) — выбери автоматически</li>
+      <li>Нажми «Добавить»</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 3</div>
+    <div class="step-title">Обрезка и порядок клипов</div>
+    <ul class="step-list">
+      <li>Нажми на клип → тяни края чтобы обрезать</li>
+      <li>Убирай все паузы, «эээ», молчание — безжалостно</li>
+      <li>Между фразами оставляй 0.2–0.3 секунды максимум</li>
+      <li>Зажми клип и тяни чтобы поменять порядок</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 4</div>
+    <div class="step-title">Автосубтитры — главная функция</div>
+    <ul class="step-list">
+      <li>Внизу нажми «Текст» → «Авто-субтитры»</li>
+      <li>Выбери язык: Русский</li>
+      <li>Нажми «Старт» — ждёшь 30–60 секунд</li>
+      <li>Проверь субтитры — исправь ошибки вручную</li>
+      <li>Выдели ключевые слова: нажми на слово → измени цвет на золотой или белый жирный</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 5</div>
+    <div class="step-title">Музыка</div>
+    <ul class="step-list">
+      <li>Нажми «Аудио» → «Музыка»</li>
+      <li>Поиск: "cinematic motivation" / "dark ambient" / "lofi aesthetic"</li>
+      <li>Громкость музыки: 15–25% (голос должен быть слышен чётко)</li>
+      <li>Для лайфстайл b-roll без голоса: громкость 60–80%</li>
+    </ul>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num">ШАГ 6</div>
+    <div class="step-title">Экспорт</div>
+    <ul class="step-list">
+      <li>Нажми стрелку вверх (экспорт) в правом верхнем углу</li>
+      <li>Качество: 1080p, 30fps — оптимально</li>
+      <li>Сохрани в галерею</li>
+      <li>Публикуй напрямую из галереи в TikTok и Instagram</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">Правила монтажа которые создают "дорогой" эффект</div>
+
+  <div class="card">
+    <div class="card-title">✂️ Ритм</div>
+    <p style="color:var(--muted)">Cuts должны совпадать с битом музыки. Если музыка бьёт каждые 2 секунды — меняй кадр каждые 2 секунды. В CapCut: Аудио → Beat → авто-отметка битов.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔤 Субтитры</div>
+    <p style="color:var(--muted)">Шрифт: Bold, без засечек (Montserrat или Oswald). Цвет: белый с чёрной обводкой. Ключевые слова: золотой или жёлтый. Размер: крупный — занимает нижнюю треть экрана.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎨 Цветокоррекция</div>
+    <p style="color:var(--muted)">В CapCut: Фильтры → ищи "Moody" или "Dark". Контраст +10, Насыщенность -5, Тени чуть темнее. Это даёт "дорогую" картинку даже с iPhone на улице.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Звуковые эффекты</div>
+    <p style="color:var(--muted)">Аудио → Эффекты → «whoosh» при смене кадра, «impact» на ключевых словах. 1–2 эффекта на видео — не больше. Создаёт ощущение профессионального монтажа.</p>
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showMonth(id) {
+  document.querySelectorAll('.month-section').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
