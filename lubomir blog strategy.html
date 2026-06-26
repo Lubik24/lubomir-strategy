@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Стратегия блога — Lubomir</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dim: #8B6914;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --card: #161616;
+    --border: #222222;
+    --text: #E0E0E0;
+    --muted: #888888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a1400 100%);
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 40px 32px 32px;
+    text-align: center;
+  }
+
+  .header-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .header h1 span { color: var(--gold); }
+
+  .header-sub {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 14px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .tab:hover { color: var(--gold-light); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* CONTENT */
+  .content { display: none; padding: 28px 24px; max-width: 800px; margin: 0 auto; }
+  .content.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .card p { color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .card p + p { margin-top: 8px; }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: linear-gradient(135deg, #1a1400, #111);
+    border: 1px solid var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .highlight strong { color: var(--gold); }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* METRIC */
+  .metric {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .metric-period {
+    font-size: 10px;
+    color: var(--gold-dim);
+    margin-top: 2px;
+  }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: var(--muted);
+    margin: 3px 3px 3px 0;
+  }
+
+  .tag.gold { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* VIDEO CARD */
+  .video-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .video-card:hover { border-color: var(--gold-dim); }
+
+  .video-number {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 1px;
+  }
+
+  .video-week {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .video-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    padding-right: 40px;
+  }
+
+  .video-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .video-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-tt { background: #1a0a0a; color: #ff4444; border: 1px solid #3a1a1a; }
+  .badge-ig { background: #1a0a1a; color: #c44dff; border: 1px solid #3a1a3a; }
+  .badge-both { background: #1a1400; color: var(--gold); border: 1px solid var(--gold-dim); }
+
+  .video-hook {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  .video-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+  .video-details {
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .detail-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    margin-top: 8px;
+  }
+
+  .detail-label:first-child { margin-top: 0; }
+
+  .detail-value { font-size: 12px; color: var(--muted); }
+
+  /* FUNNEL */
+  .funnel-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .funnel-num {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .funnel-body { flex: 1; }
+  .funnel-title { font-weight: 600; color: #fff; font-size: 14px; margin-bottom: 4px; }
+  .funnel-desc { font-size: 12px; color: var(--muted); }
+
+  /* TIMELINE */
+  .timeline-month {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 24px;
+  }
+
+  .timeline-month::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: -24px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-month:last-child::before { display: none; }
+
+  .timeline-dot {
+    position: absolute;
+    left: -5px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .timeline-month-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  /* SCHEDULE TABLE */
+  .schedule-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .schedule-table th {
+    background: #1a1a1a;
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .schedule-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    vertical-align: top;
+  }
+  .schedule-table tr:hover td { background: #161616; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    margin: 24px 0;
+  }
+
+  /* MONTH FILTER */
+  .month-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .month-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .month-btn:hover, .month-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: #1a1400;
+  }
+
+  .month-section { display: none; }
+  .month-section.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Personal Brand Strategy</div>
+  <h1>LUBOMIR<br><span>CONTENT PLAYBOOK</span></h1>
+  <div class="header-sub">TikTok + Instagram · RU аудитория · Июль — Сентябрь 2025</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('concept')">Концепция</div>
+  <div class="tab" onclick="showTab('funnel')">Воронка</div>
+  <div class="tab" onclick="showTab('metrics')">Метрики</div>
+  <div class="tab" onclick="showTab('schedule')">Расписание</div>
+  <div class="tab" onclick="showTab('scenarios')">Сценарии</div>
+  <div class="tab" onclick="showTab('monetization')">Монетизация</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ КОНЦЕПЦИЯ -->
+<div id="concept" class="content active">
+  <div class="section-title">Концепция блога</div>
+
+  <div class="highlight">
+    <strong>Твой угол:</strong> "Украинец, 21 год. Строю бизнес в Европе с нуля. Без связей, без стартового капитала. Показываю путь — честно."
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">👤</div>Персонаж</div>
+    <p>Ты не блогер который учит. Ты парень который делает — и показывает как. Аудитория следит за процессом, а не за результатом. Это и есть крючок.</p>
+    <p>Образ: амбициозный, честный, с вкусом к люксу, европейский lifestyle, молодой предприниматель у которого всё впереди.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">🎯</div>Целевая аудитория</div>
+    <p><strong style="color:#fff">Кто они:</strong> русскоязычные 18–30 лет в Европе (Германия, Польша, Чехия). Амбициозные, хотят денег и лучшей жизни. Видят таких как ты и думают "а я так смогу?"</p>
+    <p style="margin-top:8px"><strong style="color:#fff">Что им нужно:</strong> доверие, вдохновение, мотивация, конкретика — и человек которому можно верить.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">🎨</div>Tone of Voice</div>
+    <p>Говори как другу, не как коучу. Короткие фразы. Уверенно но без понтов. Иногда честно про тяжёлые моменты — это строит доверие сильнее любого успеха.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">3 Столпа контента</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🧠 Мышление</div>
+      <p>Мысли про деньги, успех, одиночество в пути, окружение, страхи. Работает всегда — не нужны клиенты или события.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">💼 Бизнес</div>
+      <p>Проекты, клиенты, переговоры, цифры (когда готов), ошибки, инсайты. Строит образ эксперта.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🌍 Жизнь в Европе</div>
+    <p>Мюнхен, Варшава, кафе, улицы, бильярд, атмосфера. Это lifestyle который хотят видеть. Снимай телефоном на ходу.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">Уникальность</div>
+
+  <div class="highlight">
+    Таких блогов нет: <strong>украинец в Германии, 21 год, строит веб-агентство, переезжает в Варшаву, профи в бильярде, тянется к люксу.</strong> Это не собранный образ — это ты. Не копируй других, покажи это.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ ВОРОНКА -->
+<div id="funnel" class="content">
+  <div class="section-title">Воронка монетизации</div>
+
+  <div class="highlight">
+    Каждый пост греет аудиторию к одному из трёх продуктов: <strong>сайты → наставничество → одежда</strong>. Контент двигает человека по воронке незаметно.
+  </div>
+
+  <div class="funnel-step">
+    <div class="funnel-num">1</div>
+    <div class="funnel-body">
+      <div class="funnel-title">Внимание — Видео попадает в ленту</div>
+      <div class="funnel-desc">TikTok / Reels. Сильный хук в первые 2 секунды. Цель — досмотр и подписка.</div>
+    </div>
+  </div>
+
+  <div class="funnel-step">
+    <div class="funnel-num">2</div>
+    <div class="funnel-body">
+      <div class="funnel-title">Доверие — Человек подписывается и смотрит дальше</div>
+      <div class="funnel-desc">Регулярный контент. Личность, честность, польза. Человек начинает воспринимать тебя как "своего".</div>
+    </div>
+  </div>
+
+  <div class="funnel-step">
+    <div class="funnel-num">3</div>
+    <div class="funnel-body">
+      <div class="funnel-title">Прогрев — Показываешь экспертизу и результаты</div>
+      <div class="funnel-desc">Кейсы сайтов, скрины переписок с клиентами, результаты проектов. Подписчик думает "он знает что делает".</div>
+    </div>
+  </div>
+
+  <div class="funnel-step">
+    <div class="funnel-num">4</div>
+    <div class="funnel-body">
+      <div class="funnel-title">Предложение — Мягкий CTA</div>
+      <div class="funnel-desc">Раз в 1–2 недели: "Если хочешь сайт для бизнеса — пиши в директ" или "Беру 2 человека на разбор". Не продавай агрессивно.</div>
+    </div>
+  </div>
+
+  <div class="funnel-step">
+    <div class="funnel-num">5</div>
+    <div class="funnel-body">
+      <div class="funnel-title">Продажа — Клиент / ученик / покупатель</div>
+      <div class="funnel-desc">Месяц 1–2: клиенты на сайты. Месяц 2–3: первые наставничества. Месяц 6+: одежда при наличии аудитории.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">К чему греешь аудиторию</div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">🌐</div>Сайты (сейчас)</div>
+    <p>Показываешь проекты, процесс, результат для клиента. Аудитория видит что ты делаешь и думает "мне тоже нужно". Мягкий CTA раз в неделю.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">🎓</div>Наставничество (месяц 2–3)</div>
+    <p>Когда будет 500–1000 подписчиков — запусти мини-формат: "беру 3 человека, покажу как найти первого клиента". Цена 150–300€. Это первые деньги с блога.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">👕</div>Одежда (месяц 6+)</div>
+    <p>Строй образ и эстетику с первого дня. Когда будет 5000+ аудитория — запуск лимитированного дропа. Люди покупают у тех кому доверяют.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ МЕТРИКИ -->
+<div id="metrics" class="content">
+  <div class="section-title">Цели по показателям</div>
+
+  <div class="highlight">
+    Это реалистичные цели при условии <strong>5–7 видео в неделю</strong> на обеих платформах и стабильного постинга без пропусков.
+  </div>
+
+  <div class="section-title" style="margin-top:20px">Месяц 1 — Июль</div>
+  <div class="grid-2">
+    <div class="metric"><div class="metric-value">500</div><div class="metric-label">Подписчики TikTok</div><div class="metric-period">цель к концу месяца</div></div>
+    <div class="metric"><div class="metric-value">200</div><div class="metric-label">Подписчики Instagram</div><div class="metric-period">цель к концу месяца</div></div>
+    <div class="metric"><div class="metric-value">20</div><div class="metric-label">Видео опубликовано</div><div class="metric-period">за месяц</div></div>
+    <div class="metric"><div class="metric-value">1–2</div><div class="metric-label">Клиента с блога</div><div class="metric-period">или входящий запрос</div></div>
+  </div>
+
+  <div class="section-title">Месяц 2 — Август</div>
+  <div class="grid-2">
+    <div class="metric"><div class="metric-value">2K</div><div class="metric-label">Подписчики TikTok</div><div class="metric-period">цель к концу месяца</div></div>
+    <div class="metric"><div class="metric-value">600</div><div class="metric-label">Подписчики Instagram</div><div class="metric-period">цель к концу месяца</div></div>
+    <div class="metric"><div class="metric-value">1</div><div class="metric-label">Вирусное видео</div><div class="metric-period">50K+ просмотров</div></div>
+    <div class="metric"><div class="metric-value">500€</div><div class="metric-label">Первые деньги с блога</div><div class="metric-period">клиенты / разборы</div></div>
+  </div>
+
+  <div class="section-title">Месяц 3 — Сентябрь</div>
+  <div class="grid-2">
+    <div class="metric"><div class="metric-value">5K</div><div class="metric-label">Подписчики TikTok</div><div class="metric-period">цель к концу месяца</div></div>
+    <div class="metric"><div class="metric-value">1.5K</div><div class="metric-label">Подписчики Instagram</div><div class="metric-period">цель к концу месяца</div></div>
+    <div class="metric"><div class="metric-value">3–5</div><div class="metric-label">Наставничеств</div><div class="metric-period">по 150–300€ каждое</div></div>
+    <div class="metric"><div class="metric-value">1.5K€</div><div class="metric-label">Доход с блога</div><div class="metric-period">цель за месяц</div></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">KPI которые важны</div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">📊</div>Что смотреть каждую неделю</div>
+    <p><strong style="color:#fff">Досматриваемость</strong> — важнее просмотров. Если смотрят до конца — контент работает.<br><br>
+    <strong style="color:#fff">Сохранения</strong> — лучший показатель ценности контента.<br><br>
+    <strong style="color:#fff">Переходы в профиль</strong> — значит человек хочет узнать больше о тебе.<br><br>
+    <strong style="color:#fff">Подписки с видео</strong> — отслеживай какие темы дают подписчиков.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ РАСПИСАНИЕ -->
+<div id="schedule" class="content">
+  <div class="section-title">Расписание публикаций</div>
+
+  <div class="highlight">
+    <strong>Правило:</strong> минимум 5 видео в неделю. Лучше снять 10 за один день и выкладывать по расписанию, чем снимать каждый день и выгореть.
+  </div>
+
+  <div class="section-title" style="margin-top:20px">Еженедельная структура</div>
+
+  <table class="schedule-table">
+    <tr>
+      <th>День</th>
+      <th>Тип контента</th>
+      <th>Платформа</th>
+      <th>Лучшее время</th>
+    </tr>
+    <tr>
+      <td style="color:#fff">Понедельник</td>
+      <td>Мышление / мотивация</td>
+      <td><span class="tag gold">TikTok + IG</span></td>
+      <td>19:00–21:00</td>
+    </tr>
+    <tr>
+      <td style="color:#fff">Вторник</td>
+      <td>Бизнес / процесс</td>
+      <td><span class="tag gold">TikTok</span></td>
+      <td>18:00–20:00</td>
+    </tr>
+    <tr>
+      <td style="color:#fff">Среда</td>
+      <td>Лайфстайл / Европа</td>
+      <td><span class="tag gold">IG Reels</span></td>
+      <td>12:00–14:00</td>
+    </tr>
+    <tr>
+      <td style="color:#fff">Четверг</td>
+      <td>Честный / личный</td>
+      <td><span class="tag gold">TikTok + IG</span></td>
+      <td>19:00–21:00</td>
+    </tr>
+    <tr>
+      <td style="color:#fff">Пятница</td>
+      <td>Польза / обучение</td>
+      <td><span class="tag gold">TikTok</span></td>
+      <td>17:00–19:00</td>
+    </tr>
+    <tr>
+      <td style="color:#fff">Суббота</td>
+      <td>Жизнь / влог-момент</td>
+      <td><span class="tag gold">IG Stories + Reels</span></td>
+      <td>13:00–15:00</td>
+    </tr>
+    <tr>
+      <td style="color:#fff">Воскресенье</td>
+      <td>Пауза или бонус</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+  </table>
+
+  <div class="section-title">Хештеги</div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">#</div>TikTok — базовый сет</div>
+    <div style="margin-top:8px">
+      <span class="tag">#предприниматель</span><span class="tag">#бизнесвевропе</span><span class="tag">#успех</span><span class="tag">#мотивация</span><span class="tag">#жизньвгермании</span><span class="tag">#украинецзарубежом</span><span class="tag">#варшава</span><span class="tag">#мюнхен</span><span class="tag">#вебразработка</span><span class="tag">#фриланс</span><span class="tag">#деньги</span><span class="tag">#личныйбренд</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">#</div>Instagram — базовый сет</div>
+    <div style="margin-top:8px">
+      <span class="tag">#предпринимательство</span><span class="tag">#бизнесонлайн</span><span class="tag">#мотивация2025</span><span class="tag">#жизньзарубежом</span><span class="tag">#фрилансер</span><span class="tag">#вебдизайн</span><span class="tag">#успешныйчеловек</span><span class="tag">#русскиевгермании</span><span class="tag">#русскиевваршаве</span><span class="tag">#европа</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">✍️</div>Шаблон описания к видео</div>
+    <p style="font-style:italic; color: var(--text)">
+      [Одна сильная фраза из видео или продолжение мысли]<br><br>
+      Подписывайся — показываю как строю бизнес в Европе в 21 год 🔥<br><br>
+      #хештеги
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ СЦЕНАРИИ -->
+<div id="scenarios" class="content">
+  <div class="section-title">Сценарии видео — 3 месяца</div>
+
+  <div class="month-filters">
+    <button class="month-btn active" onclick="showMonth('july')">Июль</button>
+    <button class="month-btn" onclick="showMonth('august')">Август</button>
+    <button class="month-btn" onclick="showMonth('september')">Сентябрь</button>
+  </div>
+
+  <!-- ИЮЛЬ -->
+  <div id="july" class="month-section active">
+
+    <div class="video-card">
+      <div class="video-number">#01</div>
+      <div class="video-week">Неделя 1</div>
+      <div class="video-title">Кто я и почему начинаю этот блог</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Мне 21. Я украинец, живу в Мюнхене, строю бизнес с нуля. Никто не знал кто я месяц назад — через 3 месяца узнают»</div>
+      <div class="video-details">
+        <div class="detail-label">Структура</div>
+        <div class="detail-value">Представление → кто ты → что будешь показывать → почему стоит подписаться</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Подписывайся — покажу весь путь честно»</div>
+        <div class="detail-label">Локация</div>
+        <div class="detail-value">Улица Мюнхена, кафе, или дома</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#02</div>
+      <div class="video-week">Неделя 1</div>
+      <div class="video-title">Почему богатые не рассказывают как стали богатыми</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Я знаю 3 парней моего возраста которые зарабатывают 10К+ в месяц. Никто не рассказывает как. Я понял почему»</div>
+      <div class="video-details">
+        <div class="detail-label">Структура</div>
+        <div class="detail-value">Хук → объяснение (активы vs время) → вывод → твой путь</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Сохрани если тоже думал об этом»</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#03</div>
+      <div class="video-week">Неделя 1</div>
+      <div class="video-title">Мой день как фрилансер в Мюнхене</div>
+      <div class="video-meta"><span class="video-badge badge-ig">IG Reels</span></div>
+      <div class="video-hook">«День из жизни 21-летнего веб-разработчика в Германии»</div>
+      <div class="video-details">
+        <div class="detail-label">Структура</div>
+        <div class="detail-value">Утро → работа над проектом → прогулка Мюнхен → мысль дня</div>
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Lifestyle b-roll + закадровый голос или субтитры</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#04</div>
+      <div class="video-week">Неделя 2</div>
+      <div class="video-title">Как я нашёл первого клиента не зная немецкого</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Я не говорю по-немецки. Мой первый клиент заплатил мне 1500€. Вот как это произошло»</div>
+      <div class="video-details">
+        <div class="detail-label">Структура</div>
+        <div class="detail-value">Результат сразу → как искал → что написал → чему научился</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Если хочешь сайт для своего бизнеса — пиши в директ»</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#05</div>
+      <div class="video-week">Неделя 2</div>
+      <div class="video-title">Одиночество когда строишь бизнес — никто не говорит об этом</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Гуляю один каждый день. Некому позвонить. Это реально тяжело — но я понял что это нормально»</div>
+      <div class="video-details">
+        <div class="detail-label">Структура</div>
+        <div class="detail-value">Честный момент → почему одиночество это не слабость → как используешь это</div>
+        <div class="detail-label">Эффект</div>
+        <div class="detail-value">Максимальное доверие. Люди узнают себя и подписываются</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#06</div>
+      <div class="video-week">Неделя 2</div>
+      <div class="video-title">Что такое личный бренд и почему без него нет денег</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Два одинаковых фрилансера. Один зарабатывает 500€, другой 5000€. Разница — не навыки»</div>
+      <div class="video-details">
+        <div class="detail-label">Польза</div>
+        <div class="detail-value">Объясни что такое личный бренд простыми словами, почему он важен</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Подписывайся — строю свой бренд публично, покажу весь процесс»</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#07</div>
+      <div class="video-week">Неделя 3</div>
+      <div class="video-title">Показываю сайт который сделал клиенту (до/после)</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Месяц работы. Вот что получилось»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Screen record сайта + закадровый комментарий что и зачем</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Нужен сайт для бизнеса? Пиши — сделаю так же»</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#08</div>
+      <div class="video-week">Неделя 3</div>
+      <div class="video-title">3 ошибки из-за которых фрилансеры не зарабатывают</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Я сам совершил все три. Стоило мне это нескольких тысяч евро»</div>
+      <div class="video-details">
+        <div class="detail-label">Структура</div>
+        <div class="detail-value">Ошибка 1 (нет цены) → Ошибка 2 (нет портфолио) → Ошибка 3 (боятся отказа)</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#09</div>
+      <div class="video-week">Неделя 3</div>
+      <div class="video-title">Переезжаю в Варшаву — почему</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Мюнхен — крутой город. Я всё равно уезжаю. Вот причина»</div>
+      <div class="video-details">
+        <div class="detail-label">Польза</div>
+        <div class="detail-value">Сравнение городов для предпринимателей, окружение, стоимость жизни, возможности</div>
+        <div class="detail-label">Эффект</div>
+        <div class="detail-value">Создаёт сюжет — аудитория будет следить за переездом</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#10</div>
+      <div class="video-week">Неделя 4</div>
+      <div class="video-title">Визуализация — работает или нет. Честно</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Я каждый день визуализирую богатство. Вот что реально происходит»</div>
+      <div class="video-details">
+        <div class="detail-label">Подача</div>
+        <div class="detail-value">Честно — да, помогает, но без действий не работает. Баланс между мотивацией и реальностью</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- АВГУСТ -->
+  <div id="august" class="month-section">
+
+    <div class="video-card">
+      <div class="video-number">#11</div>
+      <div class="video-week">Неделя 5</div>
+      <div class="video-title">Итоги первого месяца блога — цифры и выводы</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Месяц прошёл. Вот сколько подписчиков, что сработало, что нет»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Честный разбор. Показываешь статистику, делаешь выводы. Это доверие + обучение аудитории</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#12</div>
+      <div class="video-week">Неделя 5</div>
+      <div class="video-title">Как я строю сайт за 3–5 дней</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«От договора до готового сайта — 5 дней. Показываю процесс»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Таймлапс или нарезка этапов: бриф → дизайн → разработка → сдача</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">Мягко: «Если нужен сайт — знаешь где найти»</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#13</div>
+      <div class="video-week">Неделя 6</div>
+      <div class="video-title">Окружение которое тебя убивает</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Самые близкие люди иногда самые токсичные для твоих целей»</div>
+      <div class="video-details">
+        <div class="detail-label">Тема</div>
+        <div class="detail-value">Про окружение, энергию, как правильные люди меняют траекторию. Личный опыт.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#14</div>
+      <div class="video-week">Неделя 6</div>
+      <div class="video-title">Первое видео из Варшавы</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Я в Варшаве. Вот почему этот город другой»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Прогулка, атмосфера, закадровый голос. Варшава как новая глава.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#15</div>
+      <div class="video-week">Неделя 7</div>
+      <div class="video-title">Сколько стоит жизнь молодого предпринимателя в Европе</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Аренда, еда, телефон, сервисы — вот реальные цифры»</div>
+      <div class="video-details">
+        <div class="detail-label">Польза</div>
+        <div class="detail-value">Практичный контент для тех кто думает переехать. Высокая сохраняемость.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#16</div>
+      <div class="video-week">Неделя 7</div>
+      <div class="video-title">Почему я не нанимаю команду — пока</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Все советуют масштабироваться. Я объясню почему сейчас это неправильно»</div>
+      <div class="video-details">
+        <div class="detail-label">Тема</div>
+        <div class="detail-value">Про этапы бизнеса, когда стоит нанимать, когда нет. Показываешь стратегическое мышление.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#17</div>
+      <div class="video-week">Неделя 8</div>
+      <div class="video-title">Бильярд научил меня бизнесу — серьёзно</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Я профессиональный бильярдист. Вот 3 урока из бильярда которые я применяю в бизнесе»</div>
+      <div class="video-details">
+        <div class="detail-label">Уникальность</div>
+        <div class="detail-value">Такого контента нет ни у кого. Отличает тебя от всех похожих блогов.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#18</div>
+      <div class="video-week">Неделя 8</div>
+      <div class="video-title">Анонс: беру 3 человека на разбор бизнеса</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Первая монетизация блога. Беру 3 человека, разберём ваш проект вместе»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Первый мягкий запуск наставничества. Цена 100–150€. Набираешь опыт и деньги.</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Пиши в директ слово РАЗБОР»</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СЕНТЯБРЬ -->
+  <div id="september" class="month-section">
+
+    <div class="video-card">
+      <div class="video-number">#19</div>
+      <div class="video-week">Неделя 9</div>
+      <div class="video-title">2 месяца блога — итоги, цифры, что изменилось</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Два месяца. Вот реальные цифры подписчиков, денег, и что я понял»</div>
+      <div class="video-details">
+        <div class="detail-label">Эффект</div>
+        <div class="detail-value">Аудитория видит рост — это вдохновляет и удерживает подписчиков</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#20</div>
+      <div class="video-week">Неделя 9</div>
+      <div class="video-title">Как найти первого клиента на сайт — пошагово</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Никаких связей. Никакого бюджета. Вот как найти первого клиента за неделю»</div>
+      <div class="video-details">
+        <div class="detail-label">Польза</div>
+        <div class="detail-value">Практичный гайд. Высокие сохранения. Прогрев к наставничеству.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#21</div>
+      <div class="video-week">Неделя 10</div>
+      <div class="video-title">Жизнь в Варшаве — первый месяц честно</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Переехал. Вот что никто не говорит про Варшаву»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Влог-стиль. Квартира, район, люди, атмосфера. Честно — что понравилось и что нет.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#22</div>
+      <div class="video-week">Неделя 10</div>
+      <div class="video-title">Как я зарабатываю в интернете живя в Европе</div>
+      <div class="video-meta"><span class="video-badge badge-tt">TikTok</span></div>
+      <div class="video-hook">«Мне 21. Я не хожу в офис. Вот откуда деньги»</div>
+      <div class="video-details">
+        <div class="detail-label">Тема</div>
+        <div class="detail-value">Объяснение модели фриланс-агентства. Прогрев к обучению.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#23</div>
+      <div class="video-week">Неделя 11</div>
+      <div class="video-title">Запуск наставничества — официально</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«Открываю 5 мест. Покажу как найти клиентов и выйти на первые 1000€ в месяц»</div>
+      <div class="video-details">
+        <div class="detail-label">Формат</div>
+        <div class="detail-value">Чёткое предложение, цена, что входит, как записаться</div>
+        <div class="detail-label">CTA</div>
+        <div class="detail-value">«Пиши в директ слово СТАРТ»</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-number">#24</div>
+      <div class="video-week">Неделя 12</div>
+      <div class="video-title">3 месяца — итоги, цифры, план на следующий квартал</div>
+      <div class="video-meta"><span class="video-badge badge-both">TikTok + IG</span></div>
+      <div class="video-hook">«90 дней назад у меня не было блога. Вот что изменилось»</div>
+      <div class="video-details">
+        <div class="detail-label">Финал квартала</div>
+        <div class="detail-value">Подводишь итоги, показываешь рост, ставишь новые цели. Мощный мотивационный контент.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ МОНЕТИЗАЦИЯ -->
+<div id="monetization" class="content">
+  <div class="section-title">Монетизация по месяцам</div>
+
+  <div class="timeline-month">
+    <div class="timeline-dot"></div>
+    <div class="timeline-month-title">Июль — Месяц 1</div>
+    <div class="card">
+      <div class="card-title"><div class="icon">🎯</div>Фокус: клиенты на сайты</div>
+      <p>Блог только стартует. Монетизация через прямые продажи сайтов. CTA раз в неделю в видео. Цель — 1–2 клиента с блога дополнительно к холодным продажам.</p>
+      <p style="margin-top:8px"><strong style="color: var(--gold)">Цель дохода: 1000–2000€</strong> (основной + блог)</p>
+    </div>
+  </div>
+
+  <div class="timeline-month">
+    <div class="timeline-dot"></div>
+    <div class="timeline-month-title">Август — Месяц 2</div>
+    <div class="card">
+      <div class="card-title"><div class="icon">🎓</div>Первые разборы / мини-наставничество</div>
+      <p>При 500+ подписчиках запускаешь первые платные разборы. Формат: 1 час в Zoom, разбираешь бизнес/проект человека. Цена 100–150€. Берёшь 3–5 человек.</p>
+      <p style="margin-top:8px"><strong style="color: var(--gold)">Цель дохода: 1500–2500€</strong></p>
+    </div>
+  </div>
+
+  <div class="timeline-month">
+    <div class="timeline-dot"></div>
+    <div class="timeline-month-title">Сентябрь — Месяц 3</div>
+    <div class="card">
+      <div class="card-title"><div class="icon">📦</div>Полноценное наставничество</div>
+      <p>Пакет на 4 недели: как найти клиентов, как сделать первый сайт, как выйти на 1000€/мес. Цена 200–300€. При 5 учеников — 1000–1500€ только с этого.</p>
+      <p style="margin-top:8px"><strong style="color: var(--gold)">Цель дохода: 2500–4000€</strong></p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title">Долгосрочная монетизация</div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">👕</div>Одежда / Мерч (месяц 6–8)</div>
+    <p>Начинай строить эстетику с первого дня. Чёрный, золотой, минимализм — это уже твой стиль. При 5–10K аудитории запускаешь первый лимитированный дроп. Люди покупают образ, не вещи.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">💰</div>Партнёрства (месяц 4–6)</div>
+    <p>Русскоязычные сервисы, хостинги, конструкторы сайтов, бизнес-инструменты — платят за интеграции при 2K+ аудитории. Это пассивный доход на контент который ты и так делаешь.</p>
+  </div>
+
+  <div class="highlight" style="margin-top:16px">
+    <strong>Главное правило:</strong> первые 2 месяца — только строишь доверие. Не продавай агрессивно. Аудитория которая тебе верит купит всё. Аудитория которую ты спамишь — уйдёт.
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showMonth(id) {
+  document.querySelectorAll('.month-section').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
